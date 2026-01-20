@@ -1,0 +1,98 @@
+"use client"
+
+import { createContext, useContext, useState, useCallback, type ReactNode } from "react"
+
+type Language = "en" | "fr"
+
+interface Translations {
+  [key: string]: {
+    en: string
+    fr: string
+  }
+}
+
+const translations: Translations = {
+  search: { en: "Search by name or number...", fr: "Rechercher par nom ou numéro..." },
+  filter: { en: "Filter", fr: "Filtrer" },
+  sort: { en: "Sort", fr: "Trier" },
+  allTypes: { en: "All Types", fr: "Tous les types" },
+  byNumber: { en: "By Number", fr: "Par numéro" },
+  byName: { en: "By Name", fr: "Par nom" },
+  height: { en: "Height", fr: "Taille" },
+  weight: { en: "Weight", fr: "Poids" },
+  abilities: { en: "Abilities", fr: "Talents" },
+  stats: { en: "Stats", fr: "Stats" },
+  moves: { en: "Moves", fr: "Attaques" },
+  evolution: { en: "Evolution", fr: "Évolution" },
+  info: { en: "Info", fr: "Info" },
+  loadMore: { en: "Load More", fr: "Charger plus" },
+  loading: { en: "Loading...", fr: "Chargement..." },
+  error: { en: "Error loading data", fr: "Erreur de chargement" },
+  retry: { en: "Retry", fr: "Réessayer" },
+  selectPokemon: { en: "Select a Pokémon", fr: "Sélectionnez un Pokémon" },
+  selectPrompt: { en: "Choose a Pokémon from the list to view details", fr: "Choisissez un Pokémon dans la liste pour voir les détails" },
+  noResults: { en: "No Pokémon found", fr: "Aucun Pokémon trouvé" },
+  cached: { en: "Cached", fr: "En cache" },
+  fetching: { en: "Fetching", fr: "Récupération" },
+  generation: { en: "Generation", fr: "Génération" },
+  allGenerations: { en: "All Generations", fr: "Toutes les générations" },
+  kanto: { en: "Kanto (Gen I)", fr: "Kanto (Gen I)" },
+  back: { en: "Back", fr: "Retour" },
+  shiny: { en: "Shiny", fr: "Chromatique" },
+  normal: { en: "Normal", fr: "Normal" },
+  front: { en: "Front", fr: "Face" },
+  backSprite: { en: "Back", fr: "Dos" },
+  evolvesTo: { en: "Evolves to", fr: "Évolue en" },
+  evolvesFrom: { en: "Evolves from", fr: "Évolue de" },
+  noEvolution: { en: "Does not evolve", fr: "N'évolue pas" },
+  base: { en: "Base", fr: "Base" },
+  power: { en: "Power", fr: "Puissance" },
+  accuracy: { en: "Accuracy", fr: "Précision" },
+  pp: { en: "PP", fr: "PP" },
+  hp: { en: "HP", fr: "PV" },
+  attack: { en: "Attack", fr: "Attaque" },
+  defense: { en: "Defense", fr: "Défense" },
+  spAttack: { en: "Sp. Atk", fr: "Atq. Spé" },
+  spDefense: { en: "Sp. Def", fr: "Déf. Spé" },
+  speed: { en: "Speed", fr: "Vitesse" },
+  total: { en: "Total", fr: "Total" },
+  crtMode: { en: "CRT Mode", fr: "Mode CRT" },
+  pixelGrid: { en: "Pixel Grid", fr: "Grille pixel" },
+  cry: { en: "Cry", fr: "Cri" },
+  loadingMore: { en: "Loading more...", fr: "Chargement..." },
+  openPokedex: { en: "Open Pokédex", fr: "Ouvrir le Pokédex" },
+  closePokedex: { en: "Close Pokédex", fr: "Fermer le Pokédex" },
+  tapToOpen: { en: "Tap to open", fr: "Appuyez pour ouvrir" },
+}
+
+interface LanguageContextType {
+  language: Language
+  setLanguage: (lang: Language) => void
+  t: (key: string) => string
+}
+
+const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
+
+export function LanguageProvider({ children }: { children: ReactNode }) {
+  const [language, setLanguage] = useState<Language>("en")
+
+  const t = useCallback((key: string): string => {
+    const translation = translations[key]
+    if (!translation) return key
+    return translation[language]
+  }, [language])
+
+  return (
+    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+      {children}
+    </LanguageContext.Provider>
+  )
+}
+
+export function useLanguage() {
+  const context = useContext(LanguageContext)
+  if (context === undefined) {
+    throw new Error("useLanguage must be used within a LanguageProvider")
+  }
+  return context
+}

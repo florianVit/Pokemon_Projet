@@ -1,0 +1,465 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Pokédex Red Theme */
+  --background: #1a1a1a;
+  --foreground: #f5f5f0;
+  --card: #2a2a2a;
+  --card-foreground: #f5f5f0;
+  --popover: #2a2a2a;
+  --popover-foreground: #f5f5f0;
+  --primary: #DC2626;
+  --primary-foreground: #ffffff;
+  --secondary: #3a3a3a;
+  --secondary-foreground: #f5f5f0;
+  --muted: #404040;
+  --muted-foreground: #a0a0a0;
+  --accent: #991b1b;
+  --accent-foreground: #ffffff;
+  --destructive: #7f1d1d;
+  --destructive-foreground: #fecaca;
+  --border: #4a4a4a;
+  --input: #3a3a3a;
+  --ring: #DC2626;
+  --radius: 0.25rem; /* Preserving user's radius */
+
+  /* Pokémon Type Colors */
+  --type-normal: #A8A878;
+  --type-fire: #F08030;
+  --type-water: #6890F0;
+  --type-electric: #F8D030;
+  --type-grass: #78C850;
+  --type-ice: #98D8D8;
+  --type-fighting: #C03028;
+  --type-poison: #A040A0;
+  --type-ground: #E0C068;
+  --type-flying: #A890F0;
+  --type-psychic: #F85888;
+  --type-bug: #A8B820;
+  --type-rock: #B8A038;
+  --type-ghost: #705898;
+  --type-dragon: #7038F8;
+  --type-dark: #705848;
+  --type-steel: #B8B8D0;
+  --type-fairy: #EE99AC;
+
+  /* Panel Colors */
+  --panel-dark: #1f1f1f;
+  --panel-light: #f0ebe0;
+  --panel-screen: #9bbc0f;
+  --panel-screen-dark: #0f380f;
+
+  /* Shadcn/UI Chart and Sidebar Colors (added from default, user's existing colors preserved) */
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  /* Shadcn/UI dark theme variables (added from default) */
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.145 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --border: oklch(0.269 0 0);
+  --input: oklch(0.269 0 0);
+  --ring: oklch(0.439 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(0.269 0 0);
+  --sidebar-ring: oklch(0.439 0 0);
+}
+
+@theme inline {
+  --font-sans: 'VT323', 'Courier New', monospace;
+  --font-mono: 'Press Start 2P', 'Courier New', monospace;
+  --font-pixel: 'Press Start 2P', 'Courier New', monospace;
+  --font-retro: 'VT323', 'Courier New', monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1); /* Added from Shadcn/UI default */
+  --color-chart-2: var(--chart-2); /* Added from Shadcn/UI default */
+  --color-chart-3: var(--chart-3); /* Added from Shadcn/UI default */
+  --color-chart-4: var(--chart-4); /* Added from Shadcn/UI default */
+  --color-chart-5: var(--chart-5); /* Added from Shadcn/UI default */
+  --radius-sm: calc(var(--radius) - 2px); /* Preserving user's radius logic */
+  --radius-md: var(--radius); /* Preserving user's radius logic */
+  --radius-lg: calc(var(--radius) + 2px); /* Preserving user's radius logic */
+  --radius-xl: calc(var(--radius) + 4px); /* Preserving user's radius logic */
+  --color-sidebar: var(--sidebar); /* Added from Shadcn/UI default */
+  --color-sidebar-foreground: var(--sidebar-foreground); /* Added from Shadcn/UI default */
+  --color-sidebar-primary: var(--sidebar-primary); /* Added from Shadcn/UI default */
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground); /* Added from Shadcn/UI default */
+  --color-sidebar-accent: var(--sidebar-accent); /* Added from Shadcn/UI default */
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground); /* Added from Shadcn/UI default */
+  --color-sidebar-border: var(--sidebar-border); /* Added from Shadcn/UI default */
+  --color-sidebar-ring: var(--sidebar-ring); /* Added from Shadcn/UI default */
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Pixel-perfect borders */
+.retro-border {
+  box-shadow: 
+    inset -4px -4px 0 0 #1a1a1a,
+    inset 4px 4px 0 0 #5a5a5a,
+    inset -8px -8px 0 0 #3a3a3a,
+    inset 8px 8px 0 0 #4a4a4a;
+}
+
+.retro-border-red {
+  box-shadow: 
+    inset -4px -4px 0 0 #7f1d1d,
+    inset 4px 4px 0 0 #ef4444,
+    inset -8px -8px 0 0 #991b1b,
+    inset 8px 8px 0 0 #dc2626;
+}
+
+.retro-border-inset {
+  box-shadow: 
+    inset 4px 4px 0 0 #1a1a1a,
+    inset -4px -4px 0 0 #5a5a5a;
+}
+
+/* CRT scanline effect */
+.crt-overlay {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15),
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  z-index: 9999;
+}
+
+/* Pixel grid overlay */
+.pixel-grid {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 4px 4px;
+  z-index: 9998;
+}
+
+/* Blinking cursor animation */
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.cursor-blink {
+  animation: blink 1s infinite;
+}
+
+/* Boot screen fade */
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.boot-fade-out {
+  animation: fadeOut 0.5s ease-out forwards;
+}
+
+/* Slide up animation */
+@keyframes slideUp {
+  0% { transform: translateY(20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+.slide-up {
+  animation: slideUp 0.4s ease-out forwards;
+}
+
+/* Pokemon sprite bounce animation */
+@keyframes pokemonBounce {
+  0%, 100% { 
+    transform: translateY(0) scale(1);
+  }
+  25% { 
+    transform: translateY(-8px) scale(1.02);
+  }
+  50% { 
+    transform: translateY(0) scale(1);
+  }
+  75% { 
+    transform: translateY(-4px) scale(1.01);
+  }
+}
+
+.pokemon-bounce {
+  animation: pokemonBounce 1.5s ease-in-out infinite;
+}
+
+/* Button press effect */
+.btn-press:active {
+  transform: translateY(2px);
+  box-shadow: 
+    inset 4px 4px 0 0 #1a1a1a,
+    inset -4px -4px 0 0 #3a3a3a !important;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #2a2a2a;
+  border: 2px solid #4a4a4a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #DC2626;
+  border: 2px solid #991b1b;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ef4444;
+}
+
+/* Selection styling */
+::selection {
+  background: #DC2626;
+  color: white;
+}
+
+/* Pokedex flip animation */
+.pokedex-container {
+  perspective: 2000px;
+  perspective-origin: center center;
+}
+
+.pokedex-device {
+  transform-style: preserve-3d;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pokedex-left-half {
+  transform-style: preserve-3d;
+  transform-origin: right center;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  backface-visibility: hidden;
+}
+
+.pokedex-right-half {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+/* Closed state - left panel rotated */
+.pokedex-closed .pokedex-left-half {
+  transform: rotateY(-180deg);
+}
+
+/* Closed cover (back of left panel) */
+.pokedex-cover {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  transform: rotateY(180deg);
+  background: linear-gradient(135deg, #DC2626 0%, #991b1b 50%, #7f1d1d 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.pokedex-cover::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 4px solid rgba(255,255,255,0.1);
+  pointer-events: none;
+}
+
+/* Pokeball decoration on cover - red on top, white on bottom */
+.pokeball-deco {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(to bottom, #DC2626 0%, #DC2626 45%, #1a1a1a 45%, #1a1a1a 55%, #f5f5f5 55%, #f5f5f5 100%);
+  border: 6px solid #1a1a1a;
+  position: relative;
+  box-shadow: 
+    inset 0 20px 40px rgba(255,255,255,0.2),
+    inset 0 -20px 40px rgba(0,0,0,0.3),
+    0 8px 20px rgba(0,0,0,0.5);
+}
+
+.pokeball-deco::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #f5f5f5;
+  border: 6px solid #1a1a1a;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Pokedex opening animation */
+@keyframes pokedexOpen {
+  0% {
+    transform: scale(0.9) rotateX(10deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.02) rotateX(-2deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotateX(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes pokedexPanelSlide {
+  0% {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.pokedex-open-anim {
+  animation: pokedexOpen 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.pokedex-panel-left-anim {
+  animation: pokedexPanelSlide 0.4s ease-out 0.2s forwards;
+  opacity: 0;
+}
+
+.pokedex-panel-right-anim {
+  animation: pokedexPanelSlide 0.4s ease-out 0.35s forwards;
+  opacity: 0;
+  transform: translateX(20px);
+}
+
+@keyframes pokedexPanelSlideRight {
+  0% {
+    transform: translateX(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.pokedex-panel-right-anim {
+  animation: pokedexPanelSlideRight 0.4s ease-out 0.35s forwards;
+  opacity: 0;
+}
+
+/* Hinge styling */
+.pokedex-hinge {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 100%;
+  background: linear-gradient(to right, #1a1a1a, #3a3a3a, #1a1a1a);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.hinge-screw {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #5a5a5a, #2a2a2a);
+  border: 1px solid #1a1a1a;
+}
+
+/* Open button */
+.pokedex-open-btn {
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.pokedex-open-btn:hover {
+  transform: scale(1.05);
+}
+
+.pokedex-open-btn:active {
+  transform: scale(0.95);
+}
