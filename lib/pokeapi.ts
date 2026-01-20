@@ -135,6 +135,17 @@ export interface MoveDetails {
   }
 }
 
+export interface AbilityDetails {
+  id: number
+  name: string
+  effect_entries: Array<{
+    effect: string
+    language: {
+      name: string
+    }
+  }>
+}
+
 // Generation data
 export const generations = [
   { id: 1, name: "Kanto", nameEn: "Gen I - Kanto", nameFr: "Gen I - Kanto", range: [1, 151] },
@@ -233,7 +244,9 @@ export async function getEvolutionChain(url: string): Promise<EvolutionChain> {
 export async function getMoveDetails(url: string): Promise<MoveDetails> {
   return fetchWithCache<MoveDetails>(url)
 }
-
+export function getAbilityDetails(url: string): Promise<AbilityDetails> {
+  return fetchWithCache<AbilityDetails>(url)
+}
 // Fast initial data - uses predictable sprite URLs and minimal API calls
 export interface PokemonBasicData {
   id: number

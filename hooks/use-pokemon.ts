@@ -6,10 +6,12 @@ import {
   getPokemonSpecies,
   getEvolutionChain,
   getMoveDetails,
+  getAbilityDetails,
   type Pokemon,
   type PokemonSpecies,
   type EvolutionChain,
   type MoveDetails,
+  type AbilityDetails,
 } from "@/lib/pokeapi"
 
 // SWR config for pokemon data
@@ -63,6 +65,14 @@ export function useMoves(moveUrls: string[], limit: number) {
       )
       return moves
     },
+    swrConfig
+  )
+}
+
+export function useAbilityDetails(url: string | null) {
+  return useSWR<AbilityDetails>(
+    url ? `ability-${url}` : null,
+    () => getAbilityDetails(url!),
     swrConfig
   )
 }

@@ -9,6 +9,7 @@ import { TypeBadge } from "./type-badge"
 import { StatBars } from "./stat-bars"
 import { MovesTab } from "./moves-tab"
 import { EvolutionChainDisplay } from "./evolution-chain"
+import { AbilityPopup } from "./ability-popup"
 import { getFlavorText, getLocalizedName, getPokemonCryUrl } from "@/lib/pokeapi"
 
 interface PokemonDetailsProps {
@@ -283,19 +284,12 @@ export function PokemonDetails({ pokemonId, showBackButton = false }: PokemonDet
               <h3 className="font-pixel text-sm mb-2">{t("abilities")}</h3>
               <div className="flex flex-wrap gap-2">
                 {pokemon.abilities.map((a) => (
-                  <span
+                  <AbilityPopup
                     key={a.ability.name}
-                    className={`px-3 py-1 font-retro text-base capitalize ${
-                      a.is_hidden
-                        ? "bg-accent/50 text-accent-foreground"
-                        : "bg-secondary"
-                    }`}
-                  >
-                    {a.ability.name.replace("-", " ")}
-                    {a.is_hidden && (
-                      <span className="ml-1 font-pixel text-xs">(H)</span>
-                    )}
-                  </span>
+                    abilityUrl={a.ability.url}
+                    abilityName={a.ability.name}
+                    isHidden={a.is_hidden}
+                  />
                 ))}
               </div>
             </div>

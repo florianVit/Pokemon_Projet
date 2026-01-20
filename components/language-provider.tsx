@@ -38,7 +38,7 @@ const translations: Translations = {
   allGenerations: { en: "All Generations", fr: "Toutes les générations" },
   kanto: { en: "Kanto (Gen I)", fr: "Kanto (Gen I)" },
   back: { en: "Back", fr: "Retour" },
-  shiny: { en: "Shiny", fr: "Chromatique" },
+  shiny: { en: "Shiny", fr: "Shiny" },
   normal: { en: "Normal", fr: "Normal" },
   front: { en: "Front", fr: "Face" },
   backSprite: { en: "Back", fr: "Dos" },
@@ -63,6 +63,7 @@ const translations: Translations = {
   openPokedex: { en: "Open Pokédex", fr: "Ouvrir le Pokédex" },
   closePokedex: { en: "Close Pokédex", fr: "Fermer le Pokédex" },
   tapToOpen: { en: "Tap to open", fr: "Appuyez pour ouvrir" },
+  description: { en: "Description", fr: "Description" },
 }
 
 interface LanguageContextType {
