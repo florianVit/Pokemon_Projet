@@ -5,6 +5,8 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { PokedexShell } from "@/components/pokedex-shell"
 import { PokemonList } from "@/components/pokemon-list"
 import { PokemonDetails } from "@/components/pokemon-details"
+import { PokemonComparison } from "@/components/pokemon-comparison"
+import { TeamBuilder } from "@/components/team-builder"
 import { getAllPokemonFast, loadRemainingPokemon, TOTAL_POKEMON, type PokemonBasicData } from "@/lib/pokeapi"
 import Loading from "./loading"
 
@@ -15,6 +17,8 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(true)
   const [loadingProgress, setLoadingProgress] = useState(0)
   const [selectedId, setSelectedId] = useState<number | null>(null)
+  const [compareMode, setCompareMode] = useState(false)
+  const [teamBuilderMode, setTeamBuilderMode] = useState(false)
 
   // Initialize selected ID from URL params
   useEffect(() => {
@@ -72,7 +76,29 @@ export default function HomePage() {
             onSelect={handleSelect}
           />
         }
-        rightPanel={<PokemonDetails pokemonId={selectedId} />}
+        rightPanel={
+          teamBuilderMode ? (
+            <TeamBuilder
+              onClose={() => setTeamBuilderMode(false)}
+              pokemonList={pokemon}
+            />
+          ) : compareMode ? (
+            <PokemonComparison
+              pokemon1Id={selectedId}
+              pokemon2Id={null}
+              onClose={() => setCompareMode(false)}
+              onSelectPokemon={handleSelect}
+              pokemonList={pokemon}
+            />
+          ) : (
+            <PokemonDetails pokemonId={selectedId} onSelectPokemon={handleSelect} />
+          )
+        }
+        selectedPokemonId={selectedId}
+        onCompare={() => setCompareMode(true)}
+        compareMode={compareMode}
+        onTeamBuilder={() => setTeamBuilderMode(true)}
+        teamBuilderMode={teamBuilderMode}
       />
     </Suspense>
   )

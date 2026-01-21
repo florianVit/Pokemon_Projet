@@ -10,9 +10,10 @@ import { useLanguage } from "./language-provider"
 interface EvolutionChainProps {
   evolutionChainUrl: string
   currentPokemonId: number
+  onSelectPokemon?: (id: number) => void
 }
 
-export function EvolutionChainDisplay({ evolutionChainUrl, currentPokemonId }: EvolutionChainProps) {
+export function EvolutionChainDisplay({ evolutionChainUrl, currentPokemonId, onSelectPokemon }: EvolutionChainProps) {
   const { t, language } = useLanguage()
   const { data: evolutionChain, isLoading, error } = useEvolutionChain(evolutionChainUrl)
   
@@ -75,6 +76,7 @@ export function EvolutionChainDisplay({ evolutionChainUrl, currentPokemonId }: E
               isCurrentPokemon={step.id === currentPokemonId}
               showArrow={stepIndex < path.length - 1}
               nextStep={path[stepIndex + 1]}
+              onSelectPokemon={onSelectPokemon}
             />
           ))}
         </div>
@@ -89,40 +91,65 @@ interface EvolutionStepItemProps {
   isCurrentPokemon: boolean
   showArrow: boolean
   nextStep?: EvolutionStep
+  onSelectPokemon?: (id: number) => void
 }
 
-function EvolutionStepItem({ step, localizedName, isCurrentPokemon, showArrow, nextStep }: EvolutionStepItemProps) {
+function EvolutionStepItem({ step, localizedName, isCurrentPokemon, showArrow, nextStep, onSelectPokemon }: EvolutionStepItemProps) {
   const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${step.id}.png`
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (onSelectPokemon) {
+      e.preventDefault()
+      onSelectPokemon(step.id)
+    }
+  }
+
+  const commonClassName = `
+    flex flex-col items-center gap-1 p-2 transition-all cursor-pointer
+    ${isCurrentPokemon 
+      ? "bg-primary/20 border-2 border-primary" 
+      : "bg-secondary/50 hover:bg-secondary border-2 border-transparent"
+    }
+  `
+
+  const contentNode = (
+    <>
+      <div className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center">
+        <Image
+          src={spriteUrl || "/placeholder.svg"}
+          alt={localizedName}
+          width={80}
+          height={80}
+          className="pixelated"
+          style={{ imageRendering: "pixelated" }}
+        />
+      </div>
+      <span className="font-pixel text-xs text-muted-foreground">
+        #{String(step.id).padStart(3, "0")}
+      </span>
+      <span className="font-retro text-base capitalize">
+        {localizedName}
+      </span>
+    </>
+  )
 
   return (
     <>
-      <Link
-        href={`/pokemon/${step.id}`}
-        className={`
-          flex flex-col items-center gap-1 p-2 transition-all
-          ${isCurrentPokemon 
-            ? "bg-primary/20 border-2 border-primary" 
-            : "bg-secondary/50 hover:bg-secondary border-2 border-transparent"
-          }
-        `}
-      >
-        <div className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center">
-          <Image
-            src={spriteUrl || "/placeholder.svg"}
-            alt={localizedName}
-            width={80}
-            height={80}
-            className="pixelated"
-            style={{ imageRendering: "pixelated" }}
-          />
-        </div>
-        <span className="font-pixel text-xs text-muted-foreground">
-          #{String(step.id).padStart(3, "0")}
-        </span>
-        <span className="font-retro text-base capitalize">
-          {localizedName}
-        </span>
-      </Link>
+      {onSelectPokemon ? (
+        <button
+          onClick={handleClick}
+          className={commonClassName}
+        >
+          {contentNode}
+        </button>
+      ) : (
+        <Link
+          href={`/pokemon/${step.id}`}
+          className={commonClassName}
+        >
+          {contentNode}
+        </Link>
+      )}
 
       {showArrow && nextStep && (
         <div className="flex flex-col items-center gap-1 px-2">

@@ -7,9 +7,14 @@ import { NetworkStatus } from "./network-status"
 interface PokedexShellProps {
   leftPanel: ReactNode
   rightPanel: ReactNode
+  selectedPokemonId?: number | null
+  onCompare?: () => void
+  compareMode?: boolean
+  onTeamBuilder?: () => void
+  teamBuilderMode?: boolean
 }
 
-export function PokedexShell({ leftPanel, rightPanel }: PokedexShellProps) {
+export function PokedexShell({ leftPanel, rightPanel, selectedPokemonId, onCompare, compareMode, onTeamBuilder, teamBuilderMode }: PokedexShellProps) {
   const { language, setLanguage, t } = useLanguage()
   const [showCrt, setShowCrt] = useState(false)
   const [showPixelGrid, setShowPixelGrid] = useState(false)
@@ -19,13 +24,9 @@ export function PokedexShell({ leftPanel, rightPanel }: PokedexShellProps) {
   useEffect(() => {
     const crt = localStorage.getItem("pokedex-crt")
     const grid = localStorage.getItem("pokedex-grid")
-    const open = localStorage.getItem("pokedex-open")
     if (crt === "true") setShowCrt(true)
     if (grid === "true") setShowPixelGrid(true)
-    // Only open if previously opened
-    if (open === "true") {
-      setIsOpen(true)
-    }
+    // Keep isOpen as false (closed by default)
   }, [])
 
   const toggleCrt = () => {
@@ -195,33 +196,36 @@ export function PokedexShell({ leftPanel, rightPanel }: PokedexShellProps) {
                       FR
                     </button>
 
-                    {/* Effect toggles - hidden on mobile */}
-                    <div className="hidden lg:flex items-center gap-1">
+                    {/* Compare button */}
+                    {onCompare && (
                       <button
-                        onClick={toggleCrt}
-                        className={`px-2 py-1 font-pixel text-xs btn-press ${
-                          showCrt
+                        onClick={onCompare}
+                        disabled={!selectedPokemonId}
+                        className={`px-1.5 py-0.5 md:px-2 md:py-1 font-pixel text-xs btn-press ${
+                          compareMode
+                            ? "bg-accent text-accent-foreground"
+                            : "bg-secondary text-secondary-foreground"
+                        } disabled:opacity-50 disabled:cursor-not-allowed`}
+                        title={t("compare") || "Compare"}
+                      >
+                        VS
+                      </button>
+                    )}
+
+                    {/* Team Builder button */}
+                    {onTeamBuilder && (
+                      <button
+                        onClick={onTeamBuilder}
+                        className={`px-1.5 py-0.5 md:px-2 md:py-1 font-pixel text-xs btn-press ${
+                          teamBuilderMode
                             ? "bg-accent text-accent-foreground"
                             : "bg-secondary text-secondary-foreground"
                         }`}
-                        aria-pressed={showCrt}
-                        title={t("crtMode")}
+                        title={t("teamBuilder") || "Team Builder"}
                       >
-                        CRT
+                        TEAM
                       </button>
-                      <button
-                        onClick={togglePixelGrid}
-                        className={`px-2 py-1 font-pixel text-xs btn-press ${
-                          showPixelGrid
-                            ? "bg-accent text-accent-foreground"
-                            : "bg-secondary text-secondary-foreground"
-                        }`}
-                        aria-pressed={showPixelGrid}
-                        title={t("pixelGrid")}
-                      >
-                        GRID
-                      </button>
-                    </div>
+                    )}
                   </div>
                 </div>
               </header>

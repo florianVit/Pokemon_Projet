@@ -15,11 +15,12 @@ import { getFlavorText, getLocalizedName, getPokemonCryUrl } from "@/lib/pokeapi
 interface PokemonDetailsProps {
   pokemonId: number | null
   showBackButton?: boolean
+  onSelectPokemon?: (id: number) => void
 }
 
 type Tab = "info" | "stats" | "moves" | "evolution"
 
-export function PokemonDetails({ pokemonId, showBackButton = false }: PokemonDetailsProps) {
+export function PokemonDetails({ pokemonId, showBackButton = false, onSelectPokemon }: PokemonDetailsProps) {
   const { t, language } = useLanguage()
   const [activeTab, setActiveTab] = useState<Tab>("info")
   const [spriteVariant, setSpriteVariant] = useState<"front" | "back">("front")
@@ -193,7 +194,7 @@ export function PokemonDetails({ pokemonId, showBackButton = false }: PokemonDet
                 }`}
                 aria-pressed={isShiny}
               >
-                {isShiny ? "★" : t("shiny")}
+                {isShiny ? "Shiny" : t("shiny")}
               </button>
               <button
                 onClick={playCry}
@@ -313,6 +314,7 @@ export function PokemonDetails({ pokemonId, showBackButton = false }: PokemonDet
             <EvolutionChainDisplay
               evolutionChainUrl={species.evolution_chain.url}
               currentPokemonId={pokemon.id}
+              onSelectPokemon={onSelectPokemon}
             />
           </div>
         )}
