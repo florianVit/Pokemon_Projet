@@ -19,7 +19,9 @@ Créer une **Pokédex numérique** fonctionnelle et performante qui reproduit l'
 - Affichage d'une liste explorable de tous les Pokémon
 - Chargement rapide des 151 premiers Pokémon (génération Kanto)
 - Chargement progressif des générations suivantes en arrière-plan
-- Recherche et filtrage des Pokémon
+- **Recherche multilingue** : Recherche par nom français ou anglais, par ID
+- Pagination "Load More" pour exploration fluide (100 Pokémon à la fois)
+- Pokédex fermée par défaut pour meilleure UX
 
 ### 2. **Fiches Détaillées des Pokémon**
 Chaque Pokémon dispose d'une page complète avec :
@@ -28,31 +30,52 @@ Chaque Pokémon dispose d'une page complète avec :
 - **Informations Générales** : ID, nom, type(s), taille, poids
 - **Statistiques** : HP, Attaque, Défense, Attaque Spéciale, Défense Spéciale, Vitesse
 - **Attaques** : Liste des mouvements avec niveaux d'apprentissage
-- **Chaîne d'Évolution** : Affichage visuel de l'évolution complète
+- **Chaîne d'Évolution** : Affichage visuel de l'évolution complète avec sélection directe (sans rechargement)
 - **Capacités** : Compétences spéciales y compris les capacités cachées
 
-### 3. **Support Multilingue**
-- Traductions en plusieurs langues (français, anglais, etc.)
-- Noms et descriptions adaptés selon la langue choisie
-- Interface localisée complète
+### 3. **Comparateur de Pokémon**
+- Mode "VS" pour comparer deux Pokémon côte à côte
+- Comparaison des statistiques avec indicateurs visuels (gagnant/égal/perdant)
+- Analyse des types avec matrice d'efficacité
+- Sélection de Pokémon via modal de recherche multilingue
+- Affichage des sprites pixelisés
 
-### 4. **Interface Utilisateur Moderne**
+### 4. **Team Builder**
+- Créez une équipe de jusqu'à 6 Pokémon
+- Analyse automatique de la couverture de type :
+  - **Faiblesses défensives** : Types contre lesquels l'équipe est vulnérable
+  - **Résistances** : Types que l'équipe peut contrer efficacement
+  - **Couverture offensive** : Types offensifs couverts par l'équipe
+- Suggestions intelligentes pour compléter votre équipe
+- Empêche les doublons
+- Interface optimisée avec sprites agrandis et types redimensionnés
+
+### 5. **Support Multilingue Complet**
+- Traductions EN/FR pour l'interface et les noms de Pokémon
+- Recherche fonctionnelle dans les deux langues
+- Noms et descriptions adaptés selon la langue choisie
+- Sélection de langue accessible dans l'en-tête
+
+### 6. **Interface Utilisateur Moderne**
 - Design responsif et adaptatif (mobile, tablette, desktop)
-- Thème clair/sombre
+- Thème clair/sombre avec persistence
 - Animations fluides et transitions élégantes
 - Composants UI professionnels via Radix UI
+- Affichage pixelisé rétro pour les sprites
 
-### 5. **Performance Optimisée**
+### 7. **Performance Optimisée**
 - Chargement initial rapide avec données pré-calculées
 - Chargement progressif des données supplémentaires
 - Optimisation des images
-- Mise en cache intelligente
+- Mise en cache intelligente avec revalidation
+- useSWR pour gestion des données côté client
 
-### 6. **Navigation Avancée**
-- Barre de recherche avec commandes rapides
+### 8. **Navigation Avancée**
+- Barre de recherche avec support multilingue
 - Liens directs vers les pages détaillées
 - Paramètres d'URL pour partage facile
 - Navigation contextuelle
+- Sélection de Pokémon sans rechargement depuis la chaîne d'évolution
 
 ---
 
@@ -100,14 +123,18 @@ Pokemon_Projet/
 ├── components/                   # Composants React réutilisables
 │   ├── pokemon-list.tsx         # Liste affichable des Pokémon
 │   ├── pokemon-details.tsx      # Affichage détaillé d'un Pokémon
-│   ├── evolution-chain.tsx      # Chaîne d'évolution
+│   ├── evolution-chain.tsx      # Chaîne d'évolution avec sélection
 │   ├── moves-tab.tsx            # Onglet des attaques
 │   ├── ability-popup.tsx        # Modal des capacités
 │   ├── stat-bars.tsx            # Affichage des barres de stats
 │   ├── type-badge.tsx           # Badge de type
 │   ├── pokedex-shell.tsx        # Layout principal de la Pokédex
+│   ├── pokemon-comparison.tsx   # Comparateur de Pokémon
+│   ├── team-builder.tsx         # Créateur d'équipe avec analyse
 │   ├── theme-provider.tsx       # Fournisseur de thème
-│   ├── language-provider.tsx    # Fournisseur de langue
+│   ├── language-provider.tsx    # Fournisseur de langue (EN/FR)
+│   ├── network-status.tsx       # Indicateur d'état réseau
+│   ├── boot-animation.tsx       # Animation de démarrage
 │   └── ui/                      # Composants UI génériques
 │       ├── button.tsx, card.tsx, dialog.tsx
 │       ├── tabs.tsx, input.tsx, etc.
@@ -204,6 +231,39 @@ pnpm lint
   - Chaîne d'évolution complète
   - Toutes les attaques disponibles
 
+### Comparateur de Pokémon (Mode VS)
+
+- Accessible via le bouton "VS" dans l'en-tête
+- Affichage côte à côte de deux Pokémon
+- Comparaison détaillée des statistiques avec indicateurs
+- Analyse complète des types (efficacités)
+- Modal de sélection avec recherche multilingue
+- Sprite pixelisé pour chaque Pokémon
+
+### Team Builder (Mode TEAM)
+
+- Accessible via le bouton "TEAM" dans l'en-tête
+- Construction d'équipe jusqu'à 6 Pokémon
+- Prévention automatique des doublons
+- **Analyse de Couverture** :
+  - Tableau des faiblesses défensives
+  - Tableau des résistances
+  - Matrice de couverture offensive
+- **Suggestions Intelligentes** pour compléter l'équipe
+- Modal de sélection avec recherche par nom (EN/FR) ou ID
+- Interface optimisée : sprites agrandis (80px), types redimensionnés
+
+### Recherche Multilingue
+
+- Recherche par nom français (ex: "Rondoudou" pour Jigglypuff)
+- Recherche par nom anglais (ex: "Pikachu")
+- Recherche par ID Pokémon (ex: "25" pour Pikachu)
+- Fonctionne dans :
+  - Liste principale des Pokémon
+  - Comparateur
+  - Team Builder
+- Mise en cache des noms traduits pour performance
+
 ---
 
 ## 🎨 Points Forts du Design
@@ -264,11 +324,6 @@ pnpm lint
 
 ---
 
-## 🎓 Pour Quelqu'un Qui N'y Connait Rien
-
-### En Très Résumé
-Imaginez un **Wikipédia des Pokémon** moderne et interactif. Vous ouvrez le site, vous voyez une liste de tous les petits monstres, vous cliquez sur l'un d'eux, et vous découvrez tout ce qu'il faut savoir : à quoi il ressemble, ses forces et faiblesses, ses attaques, son évolution, etc. C'est ultra rapide, ça marche sur mobile comme sur ordinateur, et c'est très joli à regarder ! 🎮
-
 ### Termes Clés Expliqués
 - **Next.js** : Framework qui facilite la création de sites web avec React
 - **TypeScript** : Version "sécurisée" du JavaScript avec vérification des erreurs
@@ -296,4 +351,3 @@ Pour toute question sur le fonctionnement du projet, consultez :
 
 ---
 
-**Créé avec ❤️ | Pokédex Interactive**
