@@ -1,14 +1,17 @@
 "use client"
 
 import { typeColors } from "@/lib/pokeapi"
+import { getTypeLabel } from "./language-provider"
 
 interface TypeBadgeProps {
   type: string
   size?: "sm" | "md" | "lg"
+  language?: "en" | "fr"
 }
 
-export function TypeBadge({ type, size = "md" }: TypeBadgeProps) {
+export function TypeBadge({ type, size = "md", language = "en" }: TypeBadgeProps) {
   const color = typeColors[type] || "#888888"
+  const displayName = getTypeLabel(type, language)
   
   const sizeClasses = {
     sm: "px-2 py-0.5 text-xs",
@@ -30,7 +33,7 @@ export function TypeBadge({ type, size = "md" }: TypeBadgeProps) {
       }}
       aria-label={`Type: ${type}`}
     >
-      {type}
+      {displayName}
     </span>
   )
 }

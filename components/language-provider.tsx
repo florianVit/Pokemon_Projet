@@ -88,6 +88,11 @@ const translations: Translations = {
   resistant: { en: "Resistant", fr: "Résistant" },
   goodCoverage: { en: "Good Coverage", fr: "Bonne couverture" },
   poorCoverage: { en: "Poor Coverage", fr: "Mauvaise couverture" },
+  typeAdvantage: { en: "Type Advantage", fr: "Avantage de type" },
+  hasTypeAdvantage: { en: "has the type advantage", fr: "a l'avantage de type" },
+  typeMatchupNeutral: { en: "Neutral type matchup", fr: "Matchup neutre" },
+  offensive: { en: "Offensive", fr: "Offensif" },
+  defensive: { en: "Defensive", fr: "Défensif" },
 }
 
 interface LanguageContextType {
@@ -120,4 +125,29 @@ export function useLanguage() {
     throw new Error("useLanguage must be used within a LanguageProvider")
   }
   return context
+}
+
+export function getTypeLabel(typeName: string, language: "en" | "fr"): string {
+  const typeTranslations: Record<string, Record<string, string>> = {
+    normal: { en: "Normal", fr: "Normal" },
+    fire: { en: "Fire", fr: "Feu" },
+    water: { en: "Water", fr: "Eau" },
+    electric: { en: "Electric", fr: "Électrique" },
+    grass: { en: "Grass", fr: "Plante" },
+    ice: { en: "Ice", fr: "Glace" },
+    fighting: { en: "Fighting", fr: "Combat" },
+    poison: { en: "Poison", fr: "Poison" },
+    ground: { en: "Ground", fr: "Sol" },
+    flying: { en: "Flying", fr: "Vol" },
+    psychic: { en: "Psychic", fr: "Psy" },
+    bug: { en: "Bug", fr: "Insecte" },
+    rock: { en: "Rock", fr: "Roche" },
+    ghost: { en: "Ghost", fr: "Spectre" },
+    dragon: { en: "Dragon", fr: "Dragon" },
+    dark: { en: "Dark", fr: "Ténèbres" },
+    steel: { en: "Steel", fr: "Acier" },
+    fairy: { en: "Fairy", fr: "Fée" },
+  }
+  
+  return typeTranslations[typeName]?.[language] || typeName
 }

@@ -84,7 +84,7 @@ export function BootAnimation() {
 
         {/* Title */}
         <h1 className="font-pixel text-[#9bbc0f] text-lg md:text-xl text-center tracking-wider">
-          POKÉDEX KANTO
+          POKÉDEX 
         </h1>
 
         {/* Loading message */}

@@ -198,7 +198,7 @@ export function TeamBuilder({ onClose, pokemonList = [] }: TeamBuilderProps) {
                   .map(([type, count]) => (
                     <div key={type} className="flex items-center gap-1">
                       <div className="transform scale-75 origin-center">
-                        <TypeBadge type={type} />
+                        <TypeBadge type={type} language={language as "en" | "fr"} />
                       </div>
                       <span className="font-pixel text-xs text-red-400">×{count}</span>
                     </div>
@@ -235,7 +235,7 @@ export function TeamBuilder({ onClose, pokemonList = [] }: TeamBuilderProps) {
               <div className="flex flex-wrap gap-1">
                 {Array.from(teamAnalysis.offensiveCoverage).slice(0, 12).map(type => (
                   <div key={type} className="transform scale-75 origin-center">
-                    <TypeBadge type={type} />
+                    <TypeBadge type={type} language={language as "en" | "fr"} />
                   </div>
                 ))}
               </div>
@@ -347,7 +347,7 @@ function TeamSlot({ member, onRemove, language, t }: TeamSlotProps) {
       <div className="flex gap-1 justify-center mt-1 flex-wrap">
         {member.types.slice(0, 2).map(type => (
           <div key={type} className="transform scale-75 origin-center">
-            <TypeBadge type={type} />
+            <TypeBadge type={type} language={language as "en" | "fr"} />
           </div>
         ))}
       </div>

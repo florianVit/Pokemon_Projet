@@ -223,7 +223,7 @@ export function PokemonDetails({ pokemonId, showBackButton = false, onSelectPoke
             {/* Types */}
             <div className="flex gap-2 justify-center md:justify-start mb-3">
               {pokemon.types.map((t) => (
-                <TypeBadge key={t.type.name} type={t.type.name} size="md" />
+                <TypeBadge key={t.type.name} type={t.type.name} size="md" language={language as "en" | "fr"} />
               ))}
             </div>
 

@@ -2,6 +2,7 @@
 
 import Image from "next/image"
 import { TypeBadge } from "./type-badge"
+import { useLanguage } from "./language-provider"
 
 interface PokemonListItemProps {
   id: number
@@ -20,6 +21,7 @@ export function PokemonListItem({
   isSelected,
   onSelect,
 }: PokemonListItemProps) {
+  const { language } = useLanguage()
   const formattedId = String(id).padStart(3, "0")
 
   return (
@@ -64,7 +66,7 @@ export function PokemonListItem({
         </div>
         <div className="flex gap-1 mt-1">
           {types.map((type) => (
-            <TypeBadge key={type} type={type} size="sm" />
+            <TypeBadge key={type} type={type} size="sm" language={language as "en" | "fr"} />
           ))}
         </div>
       </div>

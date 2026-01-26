@@ -1,13 +1,14 @@
 "use client"
 
 import { useState } from "react"
-import { useMoves, type PokemonMove } from "@/hooks/use-pokemon"
+import { useMoves } from "@/hooks/use-pokemon"
 import { useLanguage } from "./language-provider"
 import { TypeBadge } from "./type-badge"
 import { getMoveName } from "@/lib/move-names"
+import { type Pokemon } from "@/lib/pokeapi"
 
 interface MovesTabProps {
-  moves: PokemonMove[]
+  moves: Pokemon["moves"]
 }
 
 const MOVES_PER_PAGE = 10
@@ -50,7 +51,7 @@ export function MovesTab({ moves }: MovesTabProps) {
               </span>
 
               {/* Type */}
-              <TypeBadge type={move.type.name} size="sm" />
+              <TypeBadge type={move.type.name} size="sm" language={language as "en" | "fr"} />
 
               {/* Power */}
               <div className="w-20 text-center mr-4">
