@@ -7,6 +7,7 @@ import { PokemonList } from "@/components/pokemon-list"
 import { PokemonDetails } from "@/components/pokemon-details"
 import { PokemonComparison } from "@/components/pokemon-comparison"
 import { TeamBuilder } from "@/components/team-builder"
+import { BoosterLab } from "@/components/booster-lab"
 import { getAllPokemonFast, loadRemainingPokemon, TOTAL_POKEMON, type PokemonBasicData } from "@/lib/pokeapi"
 import Loading from "./loading"
 
@@ -19,6 +20,7 @@ export default function HomePage() {
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [compareMode, setCompareMode] = useState(false)
   const [teamBuilderMode, setTeamBuilderMode] = useState(false)
+  const [boosterMode, setBoosterMode] = useState(false)
 
   // Initialize selected ID from URL params
   useEffect(() => {
@@ -65,6 +67,24 @@ export default function HomePage() {
     router.push(`?${params.toString()}`, { scroll: false })
   }
 
+  const openComparison = () => {
+    setCompareMode(true)
+    setTeamBuilderMode(false)
+    setBoosterMode(false)
+  }
+
+  const openTeamBuilder = () => {
+    setTeamBuilderMode(true)
+    setCompareMode(false)
+    setBoosterMode(false)
+  }
+
+  const openBoosterLab = () => {
+    setBoosterMode(true)
+    setCompareMode(false)
+    setTeamBuilderMode(false)
+  }
+
   return (
     <Suspense fallback={<Loading />}>
       <PokedexShell
@@ -82,6 +102,11 @@ export default function HomePage() {
               onClose={() => setTeamBuilderMode(false)}
               pokemonList={pokemon}
             />
+          ) : boosterMode ? (
+            <BoosterLab
+              onClose={() => setBoosterMode(false)}
+              pokemonList={pokemon}
+            />
           ) : compareMode ? (
             <PokemonComparison
               pokemon1Id={selectedId}
@@ -95,10 +120,12 @@ export default function HomePage() {
           )
         }
         selectedPokemonId={selectedId}
-        onCompare={() => setCompareMode(true)}
+        onCompare={openComparison}
         compareMode={compareMode}
-        onTeamBuilder={() => setTeamBuilderMode(true)}
+        onTeamBuilder={openTeamBuilder}
         teamBuilderMode={teamBuilderMode}
+        onBooster={openBoosterLab}
+        boosterMode={boosterMode}
       />
     </Suspense>
   )

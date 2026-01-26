@@ -119,6 +119,9 @@ export interface PokemonSpecies {
     name: string
     url: string
   } | null
+  is_legendary?: boolean
+  is_mythical?: boolean
+  is_baby?: boolean
 }
 
 export interface MoveDetails {

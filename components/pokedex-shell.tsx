@@ -12,9 +12,11 @@ interface PokedexShellProps {
   compareMode?: boolean
   onTeamBuilder?: () => void
   teamBuilderMode?: boolean
+  onBooster?: () => void
+  boosterMode?: boolean
 }
 
-export function PokedexShell({ leftPanel, rightPanel, selectedPokemonId, onCompare, compareMode, onTeamBuilder, teamBuilderMode }: PokedexShellProps) {
+export function PokedexShell({ leftPanel, rightPanel, selectedPokemonId, onCompare, compareMode, onTeamBuilder, teamBuilderMode, onBooster, boosterMode }: PokedexShellProps) {
   const { language, setLanguage, t } = useLanguage()
   const [showCrt, setShowCrt] = useState(false)
   const [showPixelGrid, setShowPixelGrid] = useState(false)
@@ -105,62 +107,64 @@ export function PokedexShell({ leftPanel, rightPanel, selectedPokemonId, onCompa
           style={{ height: 'min(85vh, 700px)' }}
         >
           <div className="relative w-full h-full flex">
-            {/* Left Panel with flip animation */}
-            <div 
-              className="pokedex-left-half pokedex-panel-left-anim relative w-1/2 h-full"
-              style={{ transformStyle: 'preserve-3d' }}
-            >
-              {/* Front side - Pokemon list */}
+            {/* Left Panel with flip animation (hidden in booster mode) */}
+            {!boosterMode && (
               <div 
-                className="absolute inset-0 bg-primary retro-border-red flex flex-col overflow-hidden"
-                style={{ backfaceVisibility: 'hidden' }}
+                className="pokedex-left-half pokedex-panel-left-anim relative w-1/2 h-full"
+                style={{ transformStyle: 'preserve-3d' }}
               >
-                {/* Header */}
-                <header className="bg-primary p-2 md:p-3 border-b-4 border-border flex-shrink-0">
-                  <div className="flex items-center justify-between gap-2">
-                    {/* LED lights */}
-                    <div className="flex items-center gap-1">
-                      <div className="w-3 h-3 md:w-4 md:h-4 bg-blue-400 rounded-full border-2 border-blue-600 shadow-lg animate-pulse" />
-                      <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-red-400 rounded-full border border-red-600" />
-                      <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-yellow-400 rounded-full border border-yellow-600" />
+                {/* Front side - Pokemon list */}
+                <div 
+                  className="absolute inset-0 bg-primary retro-border-red flex flex-col overflow-hidden"
+                  style={{ backfaceVisibility: 'hidden' }}
+                >
+                  {/* Header */}
+                  <header className="bg-primary p-2 md:p-3 border-b-4 border-border flex-shrink-0">
+                    <div className="flex items-center justify-between gap-2">
+                      {/* LED lights */}
+                      <div className="flex items-center gap-1">
+                        <div className="w-3 h-3 md:w-4 md:h-4 bg-blue-400 rounded-full border-2 border-blue-600 shadow-lg animate-pulse" />
+                        <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-red-400 rounded-full border border-red-600" />
+                        <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-yellow-400 rounded-full border border-yellow-600" />
+                      </div>
+                      
+                      {/* Close button */}
+                      <button
+                        onClick={toggleOpen}
+                        className="px-2 py-1 font-pixel text-xs bg-secondary text-secondary-foreground btn-press"
+                        aria-label={t("closePokedex")}
+                      >
+                        X
+                      </button>
                     </div>
-                    
-                    {/* Close button */}
-                    <button
-                      onClick={toggleOpen}
-                      className="px-2 py-1 font-pixel text-xs bg-secondary text-secondary-foreground btn-press"
-                      aria-label={t("closePokedex")}
-                    >
-                      X
-                    </button>
-                  </div>
-                </header>
+                  </header>
 
-                {/* Pokemon List */}
-                <div className="flex-1 overflow-hidden bg-card">
-                  {leftPanel}
+                  {/* Pokemon List */}
+                  <div className="flex-1 overflow-hidden bg-card">
+                    {leftPanel}
+                  </div>
+                </div>
+
+                {/* Back side - Cover */}
+                <div 
+                  className="pokedex-cover absolute inset-0"
+                  style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
+                  onClick={toggleOpen}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => e.key === 'Enter' && toggleOpen()}
+                  aria-label={t("openPokedex")}
+                >
+                  <div className="pokeball-deco" />
+                  <p className="font-pixel text-white text-xs md:text-sm mt-4 animate-pulse">
+                    {t("tapToOpen")}
+                  </p>
                 </div>
               </div>
-
-              {/* Back side - Cover */}
-              <div 
-                className="pokedex-cover absolute inset-0"
-                style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
-                onClick={toggleOpen}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => e.key === 'Enter' && toggleOpen()}
-                aria-label={t("openPokedex")}
-              >
-                <div className="pokeball-deco" />
-                <p className="font-pixel text-white text-xs md:text-sm mt-4 animate-pulse">
-                  {t("tapToOpen")}
-                </p>
-              </div>
-            </div>
+            )}
 
             {/* Right Panel */}
-            <div className="pokedex-right-half pokedex-panel-right-anim w-1/2 h-full bg-primary retro-border-red flex flex-col overflow-hidden">
+            <div className={`pokedex-right-half pokedex-panel-right-anim ${boosterMode ? "w-full" : "w-1/2"} h-full bg-primary retro-border-red flex flex-col overflow-hidden`}>
               {/* Header */}
               <header className="bg-primary p-2 md:p-3 border-b-4 border-border flex-shrink-0">
                 <div className="flex items-center justify-between gap-2 flex-wrap">
@@ -224,6 +228,21 @@ export function PokedexShell({ leftPanel, rightPanel, selectedPokemonId, onCompa
                         title={t("teamBuilder") || "Team Builder"}
                       >
                         TEAM
+                      </button>
+                    )}
+
+                    {/* Booster button */}
+                    {onBooster && (
+                      <button
+                        onClick={onBooster}
+                        className={`px-1.5 py-0.5 md:px-2 md:py-1 font-pixel text-xs btn-press ${
+                          boosterMode
+                            ? "bg-accent text-accent-foreground"
+                            : "bg-secondary text-secondary-foreground"
+                        }`}
+                        title={t("boosterLab") || "Boosters"}
+                      >
+                        BOOST
                       </button>
                     )}
                   </div>
