@@ -219,7 +219,7 @@ export function TeamBuilder({ onClose, pokemonList = [] }: TeamBuilderProps) {
                   .map(([type, count]) => (
                     <div key={type} className="flex items-center gap-1">
                       <div className="transform scale-75 origin-center">
-                        <TypeBadge type={type} />
+                        <TypeBadge type={type} language={language as "en" | "fr"} />
                       </div>
                       <span className="font-pixel text-xs text-green-400">×{count}</span>
                     </div>

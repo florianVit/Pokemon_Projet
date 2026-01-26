@@ -77,6 +77,7 @@ export function EvolutionChainDisplay({ evolutionChainUrl, currentPokemonId, onS
               showArrow={stepIndex < path.length - 1}
               nextStep={path[stepIndex + 1]}
               onSelectPokemon={onSelectPokemon}
+              language={language as "en" | "fr"}
             />
           ))}
         </div>
@@ -92,9 +93,10 @@ interface EvolutionStepItemProps {
   showArrow: boolean
   nextStep?: EvolutionStep
   onSelectPokemon?: (id: number) => void
+  language: "en" | "fr"
 }
 
-function EvolutionStepItem({ step, localizedName, isCurrentPokemon, showArrow, nextStep, onSelectPokemon }: EvolutionStepItemProps) {
+function EvolutionStepItem({ step, localizedName, isCurrentPokemon, showArrow, nextStep, onSelectPokemon, language }: EvolutionStepItemProps) {
   const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${step.id}.png`
 
   const handleClick = (e: React.MouseEvent) => {
@@ -168,12 +170,31 @@ function EvolutionStepItem({ step, localizedName, isCurrentPokemon, showArrow, n
             />
           </svg>
           <span className="font-pixel text-xs text-muted-foreground text-center">
-            {nextStep.minLevel ? `Lv.${nextStep.minLevel}` : 
-             nextStep.item ? nextStep.item.replace("-", " ") : 
-             nextStep.trigger !== "base" ? nextStep.trigger : ""}
+            {formatRequirement(nextStep, language)}
           </span>
         </div>
       )}
     </>
   )
+}
+
+function formatRequirement(nextStep: EvolutionStep, language: "en" | "fr"): string {
+  const levelLabel = language === "fr" ? "Niv." : "Lv."
+  if (nextStep.minLevel) return `${levelLabel}${nextStep.minLevel}`
+  if (nextStep.item) return nextStep.item.replace(/-/g, " ")
+  if (nextStep.trigger && nextStep.trigger !== "base") {
+    const triggerLabels: Record<string, { en: string; fr: string }> = {
+      trade: { en: "Trade", fr: "Échange" },
+      "use-item": { en: "Use item", fr: "Objet" },
+      "level-up": { en: "Level", fr: "Niveau" },
+      spin: { en: "Spin", fr: "Rotation" },
+      shed: { en: "Shed", fr: "Mue" },
+      "three-critical-hits": { en: "3 crits", fr: "3 coups critiques" },
+      "tower-of-darkness": { en: "Tower of Darkness", fr: "Tour des ténèbres" },
+      "tower-of-waters": { en: "Tower of Waters", fr: "Tour des eaux" },
+    }
+    const label = triggerLabels[nextStep.trigger]?.[language]
+    return label || nextStep.trigger.replace(/-/g, " ")
+  }
+  return ""
 }

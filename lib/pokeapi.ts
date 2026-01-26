@@ -203,10 +203,12 @@ export function getFetchStatus() {
 async function fetchWithCache<T>(url: string): Promise<T> {
   const cached = cache.get(url)
   if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+    console.log(" Cache hit:", url, cached.data)  // ← À ajouter
     setFetchStatus("cached")
     return cached.data as T
   }
 
+  console.log(" API call:", url)  // ← À ajouter
   setFetchStatus("fetching")
   const response = await fetch(url, {
     next: { revalidate: 3600 } // Cache on server for 1 hour
