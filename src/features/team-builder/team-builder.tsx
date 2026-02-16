@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useMemo } from "react"
+import { useRouter } from "next/navigation"
 import Image from "next/image"
 import useSWR from "swr"
 import { usePokemon, usePokemonSpecies } from "@/hooks/use-pokemon"
@@ -23,6 +24,7 @@ interface TeamBuilderProps {
 }
 
 export function TeamBuilder({ onClose, pokemonList = [] }: TeamBuilderProps) {
+  const router = useRouter()
   const { t, language } = useLanguage()
   const [team, setTeam] = useState<TeamMember[]>([])
   const [searchQuery, setSearchQuery] = useState("")
@@ -31,6 +33,7 @@ export function TeamBuilder({ onClose, pokemonList = [] }: TeamBuilderProps) {
   const [mode, setMode] = useState<"manual" | "ai">("manual")
   const [profChenReview, setProfChenReview] = useState<string | null>(null)
   const [isLoadingReview, setIsLoadingReview] = useState(false)
+  const [narrativeStyle, setNarrativeStyle] = useState<"serious" | "humor" | "epic">("serious")
 
   // Fetch localized names for search
   const uniqueIds = useMemo(() => [...new Set(pokemonList.map(p => p.id))], [pokemonList])
@@ -177,6 +180,30 @@ export function TeamBuilder({ onClose, pokemonList = [] }: TeamBuilderProps) {
             >
               AI ✨
             </button>
+            {team.length > 0 && (
+              <>
+                <select
+                  value={narrativeStyle}
+                  onChange={(e) => setNarrativeStyle(e.target.value as "serious" | "humor" | "epic")}
+                  className="px-2 py-1 text-xs font-pixel bg-secondary text-secondary-foreground border border-primary rounded"
+                >
+                  <option value="serious">{language === "fr" ? "Sérieux" : "Serious"}</option>
+                  <option value="humor">{language === "fr" ? "Humour" : "Humor"}</option>
+                  <option value="epic">{language === "fr" ? "Épique" : "Epic"}</option>
+                </select>
+                <button
+                  onClick={() => {
+                    const teamParam = encodeURIComponent(JSON.stringify(team))
+                    router.push(
+                      `/adventure?team=${teamParam}&style=${narrativeStyle}&language=${language}`
+                    )
+                  }}
+                  className="px-2 py-1 text-xs font-pixel bg-yellow-500 hover:bg-yellow-600 text-black border border-yellow-700 font-bold"
+                >
+                  🎮 {language === "fr" ? "Aventure" : "Adventure"}
+                </button>
+              </>
+            )}
           </div>
           <button
             onClick={onClose}
