@@ -8,6 +8,8 @@ import { Loader2, Settings } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
+export type AdventureMode = "classic" | "true-mas";
+
 export default function AdventurePage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -15,12 +17,14 @@ export default function AdventurePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showSettings, setShowSettings] = useState(true);
+  const [showModeSelector, setShowModeSelector] = useState(false);
   const [difficulty, setDifficulty] = useState<"easy" | "normal" | "hard">("normal");
   const [missionDifficulty, setMissionDifficulty] = useState<"easy" | "normal" | "hard">("normal");
   const [estimatedSteps, setEstimatedSteps] = useState(8);
   const [team, setTeam] = useState<any[] | null>(null);
   const [narrativeStyle, setNarrativeStyle] = useState("serious");
   const [language, setLanguage] = useState<"en" | "fr">("en");
+  const [mode, setMode] = useState<AdventureMode>("classic");
 
   const startAdventure = async (
     difficultyLevel: "easy" | "normal" | "hard",
@@ -33,7 +37,9 @@ export default function AdventurePage() {
     setError(null);
 
     try {
-      const res = await fetch("/api/adventure/start", {
+      const endpoint = mode === "true-mas" ? "/api/adventure-mas/start" : "/api/adventure/start";
+      
+      const res = await fetch(endpoint, {
         method: "POST",
         body: JSON.stringify({
           team,
@@ -41,6 +47,7 @@ export default function AdventurePage() {
           language,
           difficulty: missionDiff,
           estimatedSteps: steps,
+          mode,
         }),
       });
 
@@ -52,7 +59,6 @@ export default function AdventurePage() {
       }
 
       if (!data.gameState || !data.gameState.team || data.gameState.team.length === 0) {
-        console.error("Invalid game state returned:", data.gameState);
         throw new Error("Server returned empty or invalid game state");
       }
 
@@ -60,7 +66,6 @@ export default function AdventurePage() {
       setShowSettings(false);
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
-      console.error("Error starting adventure:", message);
       setError(`Failed to start adventure: ${message}`);
     } finally {
       setLoading(false);
@@ -72,6 +77,7 @@ export default function AdventurePage() {
       const teamJson = searchParams.get("team");
       const style = searchParams.get("style") || "serious";
       const lang = (searchParams.get("language") || "en") as "en" | "fr";
+      const selectedMode = (searchParams.get("mode") || "classic") as AdventureMode;
 
       if (!teamJson) {
         setError("No team provided - go back to Team Builder and create a team first");
@@ -84,7 +90,6 @@ export default function AdventurePage() {
       try {
         parsedTeam = JSON.parse(decodeURIComponent(teamJson));
       } catch (e) {
-        console.error("Failed to parse team JSON:", e);
         setError("Invalid team data");
         setLoading(false);
         setShowSettings(false);
@@ -101,25 +106,119 @@ export default function AdventurePage() {
       setTeam(parsedTeam);
       setNarrativeStyle(style);
       setLanguage(lang);
+      setMode(selectedMode);
+      // Show mode selector if no mode specified
+      if (!searchParams.get("mode")) {
+        setShowModeSelector(true);
+      }
       setLoading(false);
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
-      console.error("Error starting adventure:", message);
       setError(`Failed to start adventure: ${message}`);
       setLoading(false);
       setShowSettings(false);
     }
   }, [searchParams]);
 
-  if (showSettings && team && !gameState) {
+  if (showModeSelector && team && !gameState) {
     return (
       <div className="w-full h-screen bg-gradient-to-b from-red-700 to-black flex items-center justify-center p-4 z-50">
         <Card className="p-8 max-w-2xl w-full retro-border bg-gray-900 border-4 border-yellow-400">
           <div className="flex items-center gap-3 mb-6">
             <Settings className="w-8 h-8 text-yellow-300" />
             <h2 className="font-pixel text-3xl text-yellow-300">
+              {language === "fr" ? "Choisir le mode d'aventure" : "Choose Adventure Mode"}
+            </h2>
+          </div>
+
+          <div className="space-y-4 mb-6">
+            {/* Classic Mode */}
+            <div
+              onClick={() => setMode("classic")}
+              className={`cursor-pointer p-4 border-4 transition-all ${
+                mode === "classic"
+                  ? "bg-blue-600 border-blue-300"
+                  : "bg-gray-800 border-gray-600 hover:border-blue-400"
+              }`}
+            >
+              <h3 className="font-pixel text-xl text-yellow-300 mb-2">🎮 Classic Mode</h3>
+              <p className="text-sm text-gray-200">
+                {language === "fr"
+                  ? "Architecture orchestrée avec contrôleur central"
+                  : "Orchestrated architecture with central controller"}
+              </p>
+              <ul className="text-xs text-gray-300 mt-2 space-y-1">
+                <li>✓ {language === "fr" ? "Facile à déboguer" : "Easy to debug"}</li>
+                <li>✓ {language === "fr" ? "Comportement prévisible" : "Predictable behavior"}</li>
+              </ul>
+            </div>
+
+            {/* True MAS Mode */}
+            <div
+              onClick={() => setMode("true-mas")}
+              className={`cursor-pointer p-4 border-4 transition-all ${
+                mode === "true-mas"
+                  ? "bg-purple-600 border-purple-300"
+                  : "bg-gray-800 border-gray-600 hover:border-purple-400"
+              }`}
+            >
+              <h3 className="font-pixel text-xl text-yellow-300 mb-2">🤖 True MAS Mode</h3>
+              <p className="text-sm text-gray-200">
+                {language === "fr"
+                  ? "Système véritable multi-agents décentralisé"
+                  : "Decentralized true multi-agent system"}
+              </p>
+              <ul className="text-xs text-gray-300 mt-2 space-y-1">
+                <li>✨ {language === "fr" ? "Raisonnement long (Généraliste)" : "Long reasoning (Generalist)"}</li>
+                <li>✨ {language === "fr" ? "Agents spécialistes autonomes" : "Autonomous specialist agents"}</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="flex gap-4">
+            <Button
+              onClick={() => router.back()}
+              className="flex-1 font-pixel text-lg py-3 bg-red-600 hover:bg-red-700 text-white border-2 border-black"
+            >
+              {language === "fr" ? "Retour" : "Back"}
+            </Button>
+            <Button
+              onClick={() => setShowModeSelector(false)}
+              className="flex-1 font-pixel text-lg py-3 bg-yellow-500 hover:bg-yellow-600 text-black border-2 border-yellow-700"
+            >
+              {language === "fr" ? "Continuer →" : "Continue →"}
+            </Button>
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
+  if (showSettings && team && !gameState) {
+
+    return (
+      <div className="w-full h-screen bg-gradient-to-b from-red-700 to-black flex items-center justify-center p-4 z-50">
+        <Card className="p-8 max-w-2xl w-full retro-border bg-gray-900 border-4 border-yellow-400">
+          <div className="flex items-center gap-3 mb-2">
+            <Settings className="w-8 h-8 text-yellow-300" />
+            <h2 className="font-pixel text-3xl text-yellow-300">
               {language === "fr" ? "Paramètres de l'aventure" : "Adventure Settings"}
             </h2>
+          </div>
+          
+          <div className="mb-4 p-3 bg-gray-800 border-2 border-gray-600">
+            <p className="font-pixel text-sm text-gray-300">
+              Mode: <span className={`${mode === "true-mas" ? "text-purple-400" : "text-blue-400"}`}>
+                {mode === "true-mas" ? "🤖 True MAS" : "🎮 Classic"}
+              </span>
+              {" "}
+              <button 
+                onClick={() => setShowModeSelector(true)}
+                className="text-xs text-yellow-400 hover:text-yellow-300 underline ml-2"
+              >
+                ({language === "fr" ? "Changer" : "Change"})
+              </button>
+            </p>
           </div>
 
           <div className="space-y-6">

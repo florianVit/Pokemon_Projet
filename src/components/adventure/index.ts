@@ -1,1 +1,1 @@
-export { AdventureGame } from "./adventure-game";
+export { AdventureGame } from "./adventure-game";export { AdventureModeSelector } from "./mode-selector";
