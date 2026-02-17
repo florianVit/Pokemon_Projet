@@ -6,7 +6,7 @@ import {
   computeCapture,
   applyDamage,
 } from "@/lib/adventure/rules-engine";
-import { guardianValidateChoice, narratorNarrateOutcome } from "@/lib/ai/adventure-agents";
+import { guardianValidateChoice, narratorNarrateOutcome, logCollector } from "@/lib/ai";
 import { evaluateDecisionQuality, storeAdventureMemory } from "@/lib/ai/agent-tools";
 import {
   GameState,
@@ -207,13 +207,39 @@ export async function POST(request: NextRequest) {
 
     const location = event.context?.location ? ` at ${event.context.location}` : "";
     const relevance = event.context?.questRelevance ? ` | ${event.context.questRelevance}` : "";
+    const memorySummary = `${normalizedChoice.label}${location} -> ${mechanicalOutcome.success ? "success" : "failure"} (score ${mechanicalOutcome.scoreDelta})${relevance}`;
     storeAdventureMemory({
       sessionId: gameState.sessionId,
       step: gameState.currentStep,
       tags: [gameState.quest.title, event.type, normalizedChoice.risk],
-      summary: `${normalizedChoice.label}${location} -> ${mechanicalOutcome.success ? "success" : "failure"} (score ${mechanicalOutcome.scoreDelta})${relevance}`,
+      summary: memorySummary,
       timestamp: new Date().toISOString(),
     });
+
+    const toolLogs = [
+      {
+        agent: "Evaluator",
+        tool: "evaluateDecisionQuality",
+        message: `Scored decision ${decisionQuality.score}/100`,
+        data: decisionQuality.reasons.join("; ") || "No notes",
+        timestamp: new Date().toISOString(),
+      },
+      {
+        agent: "Memory",
+        tool: "storeAdventureMemory",
+        message: "Stored outcome summary",
+        data: memorySummary,
+        timestamp: new Date().toISOString(),
+      },
+    ];
+
+    for (const log of toolLogs) {
+      console.log(`[Tool] ${log.agent}.${log.tool}: ${log.message}`);
+    }
+
+    // Get agent interaction logs
+    const interactionLogs = logCollector.getRecentLogs(20);
+    console.log(`\n📊 [API] Collected ${interactionLogs.length} interaction logs for frontend\n`);
 
     return NextResponse.json({
       outcome,
@@ -236,6 +262,8 @@ export async function POST(request: NextRequest) {
           timestamp: new Date().toISOString(),
         },
       ],
+      toolLogs,
+      interactionLogs,
     });
   } catch (error) {
     console.error("Error resolving event:", error);

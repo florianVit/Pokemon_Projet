@@ -17,6 +17,7 @@ import {
   AGENT_TOOL_DESCRIPTIONS,
   calculateQuestProgress,
   checkTypeEffectiveness,
+  computeNarrativeTension,
   estimateBattleOutcome,
   generateQuestBranchOptions,
   getTeamStatus,
@@ -27,6 +28,10 @@ import {
 
 const MISTRAL_API_URL = "https://api.mistral.ai/v1/chat/completions";
 const MODEL = "mistral-small-latest";
+
+function logToolCall(agent: string, tool: string, message: string) {
+  console.log(`[Tool] ${agent}.${tool}: ${message}`);
+}
 
 
 // Call Mistral API directly
@@ -75,8 +80,10 @@ export async function gameMasterGenerateQuest(params: {
   narrativeStyle: NarrativeStyle;
   language: "en" | "fr";
   seed: number;
+  difficulty?: "easy" | "normal" | "hard";
+  estimatedSteps?: number;
 }): Promise<Quest> {
-  const { team, narrativeStyle, language, seed } = params;
+  const { team, narrativeStyle, language, seed, difficulty = "normal", estimatedSteps = 8 } = params;
 
   const teamSummary = team.map(p => `${p.name} (${p.types.join("/")})`).join(", ");
 
@@ -86,14 +93,22 @@ export async function gameMasterGenerateQuest(params: {
     epic: "Create a grandiose, legendary quest of epic proportions"
   };
 
+  const difficultyGuides = {
+    easy: "Simple objective, straightforward challenges, forgiving",
+    normal: "Balanced objective, moderate challenges",
+    hard: "Complex objective, challenging scenarios, high stakes"
+  };
+
   const prompt = `You are a Pokémon Quest Master designing a coherent adventure in the Pokémon universe.
 
 TEAM: ${teamSummary}
 STYLE: ${narrativeStyle} - ${styleGuides[narrativeStyle]}
+DIFFICULTY: ${difficulty} - ${difficultyGuides[difficulty]}
+ESTIMATED STEPS: ${estimatedSteps}
 SEED: ${seed}
 
 YOUR MISSION:
-Design a compelling main quest line (8 steps) that is NOT about the Pokémon League. Be creative!
+Design a compelling main quest line (${estimatedSteps} steps) that is NOT about the Pokémon League. Be creative!
 
 Quest ideas:
 - Deliver urgent medicine to a remote village
@@ -108,9 +123,10 @@ Quest ideas:
 The quest should:
 1. Be coherent with the Pokémon world (regions, trainers, wildlife, towns, lore)
 2. Keep a clear central objective that guides the whole adventure
-3. Be achievable in 8 steps
+3. Be achievable in ${estimatedSteps} steps
 4. Fit the ${narrativeStyle} narrative style
-5. Be specific and engaging
+5. Match the ${difficulty} difficulty level
+6. Be specific and engaging
 
 ${language === "fr" ? "Réponds EN FRANÇAIS uniquement" : "Respond ONLY in ENGLISH"}
 
@@ -119,8 +135,8 @@ RESPOND WITH THIS JSON (no markdown):
   "title": "<Quest title>",
   "description": "<2-3 sentence description>",
   "objective": "<Clear goal>",
-  "difficulty": "easy|normal|hard",
-  "estimatedSteps": 8
+  "difficulty": "${difficulty}",
+  "estimatedSteps": ${estimatedSteps}
 }`;
 
   try {
@@ -139,8 +155,8 @@ RESPOND WITH THIS JSON (no markdown):
       title: quest.title || "Adventure Quest",
       description: quest.description || "A mysterious adventure awaits...",
       objective: quest.objective || "Complete the journey",
-      difficulty: quest.difficulty || "normal",
-      estimatedSteps: 8
+      difficulty: quest.difficulty || difficulty || "normal",
+      estimatedSteps: quest.estimatedSteps || estimatedSteps || 8
     };
   } catch (error) {
     console.error("Quest generation failed:", error);
@@ -168,11 +184,16 @@ export async function choiceAgentGenerateChoices(params: {
 
   const teamIds = team.map(p => p.id);
   const teamStatus = getTeamStatus(team);
+  logToolCall("ChoiceAgent", "getTeamStatus", `health=${teamStatus.healthStatus} alive=${teamStatus.alive}/${team.length}`);
+
   const questProgress = calculateQuestProgress(currentStep, quest.estimatedSteps);
+  logToolCall("ChoiceAgent", "calculateQuestProgress", `phase=${questProgress.phase} ${questProgress.percent}%`);
+
   const ranked = rankBestPokemonForQuest(team, {
     objective: quest.objective,
     enemyTypes: event.context.enemyTypes,
   });
+  logToolCall("ChoiceAgent", "rankBestPokemonForQuest", `top=${ranked.slice(0, 2).map((p) => p.name).join(", ") || "N/A"}`);
   const topPicks = ranked.slice(0, 2).map((p) => `${p.name} (${p.score.toFixed(0)})`).join(", ");
 
   const styleDescriptions = {
@@ -363,6 +384,7 @@ export async function guardianValidateChoice(params: {
     for (const pokemon of affectedPokemon) {
       for (const type of pokemon.types) {
         const effectiveness = checkTypeEffectiveness(type, event.context.enemyTypes);
+        logToolCall("Guardian", "checkTypeEffectiveness", `${type} vs ${event.context.enemyTypes.join("/")}: x${effectiveness.multiplier}`);
         if (effectiveness.multiplier > 1) hasAdvantage = true;
         if (effectiveness.multiplier > 0 && effectiveness.multiplier < 1) hasDisadvantage = true;
         if (effectiveness.multiplier === 0) hasDisadvantage = true;
@@ -385,11 +407,14 @@ export async function guardianValidateChoice(params: {
     const action = choice.risk === RiskLevel.SAFE ? "defend" : choice.risk === RiskLevel.RISKY ? "attack" : "support";
 
     const sim = simulateTurnOutcome(action, primary, { power: enemyPower, types: enemyTypes }, choice.risk);
+    logToolCall("Guardian", "simulateTurnOutcome", `win=${Math.round(sim.winProbability * 100)}% koRisk=${Math.round(sim.koRisk * 100)}%`);
+
     const estimate = estimateBattleOutcome({
       playerPokemon: primary,
       enemyPower,
       enemyTypes,
     });
+    logToolCall("Guardian", "estimateBattleOutcome", `recommend=${estimate.recommendedAction} win=${Math.round(estimate.winProbability * 100)}%`);
     if (sim.koRisk > 0.7) {
       koRiskHigh = true;
       warnings.push(`High KO risk detected (${Math.round(sim.koRisk * 100)}%)`);
@@ -566,16 +591,32 @@ export async function gameMasterGenerateQuestEvent(params: {
   const totalSteps = quest.estimatedSteps;
   const progressPercent = Math.round((currentStep / totalSteps) * 100);
   const teamStatus = getTeamStatus(team);
+  logToolCall("GameMaster", "getTeamStatus", `health=${teamStatus.healthStatus} alive=${teamStatus.alive}/${team.length}`);
+
   const questProgress = calculateQuestProgress(currentStep, totalSteps);
+  logToolCall("GameMaster", "calculateQuestProgress", `phase=${questProgress.phase} ${questProgress.percent}%`);
+
   const branchOptions = generateQuestBranchOptions({
     quest,
     currentStep,
     difficulty: quest.difficulty,
   });
+  logToolCall("GameMaster", "generateQuestBranchOptions", `count=${branchOptions.length}`);
+
+  const faintedCount = team.filter((p) => p.currentHp === 0).length;
+  const victories = Math.max(0, currentStep - 1);
+  const tensionInsight = computeNarrativeTension(currentStep, victories, faintedCount);
+  logToolCall(
+    "GameMaster",
+    "computeNarrativeTension",
+    `level=${tensionInsight.tensionLevel} suggested=${tensionInsight.recommendedEvent}`
+  );
+
   const survival = predictTeamSurvival({
     ...({} as GameState),
     team,
   } as GameState, questProgress.stepsRemaining);
+  logToolCall("GameMaster", "predictTeamSurvival", `survival=${Math.round(survival.survivalProbability * 100)}%`);
   
   const styleDescriptions = {
     serious: "serious and dramatic",
@@ -598,7 +639,8 @@ TEAM CONTEXT:
 
 NARRATIVE SETTINGS:
 - Style: ${narrativeStyle} (${styleDescriptions[narrativeStyle]})
-- Tension Level: ${tensionLevel}/3
+- Tension Level: ${tensionInsight.tensionLevel}/3 (${tensionInsight.note})
+- Suggested Event: ${tensionInsight.recommendedEvent}
 
 TEAM STATUS:
 - Alive: ${teamStatus.alive}/${team.length}

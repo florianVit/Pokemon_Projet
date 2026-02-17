@@ -1,173 +1,151 @@
 # 🎮 Pokédex - Plateforme Interactive de Découverte Pokémon
 
-## Principe du projet
+## 🎯 Principe du Projet
 
-L’objectif principal du projet est de le réaliser uniquement à l’aide de prompts, grâce au chat Copilot intégré à l’IDE.
-
-## 📖 Résumé du Projet
-
-**Pokédex** est une application web moderne et interactive construite avec **Next.js** qui permet aux utilisateurs d'explorer et de découvrir tous les Pokémon. C'est un site de référence complet qui offre des informations détaillées sur chaque créature, incluant les statistiques, les attaques, les évolutions, et bien plus encore.
-
-### 🎯 Objectif Principal
-Créer une **Pokédex numérique** fonctionnelle et performante qui reproduit l'expérience d'une véritable encyclopédie Pokémon, avec une interface utilisateur intuitive et réactive.
+Ce projet est réalisé entièrement via des **prompts AI** en utilisant GitHub Copilot dans l'IDE, démontrant les capacités de l'IA dans le développement logiciel moderne.
 
 ---
 
-## ✨ Fonctionnalités Principales
+## 📖 Description
 
-### 1. **Liste Complète des Pokémon**
-- Affichage d'une liste explorable de tous les Pokémon
-- Chargement rapide des 151 premiers Pokémon (génération Kanto)
-- Chargement progressif des générations suivantes en arrière-plan
-- **Recherche multilingue** : Recherche par nom français ou anglais, par ID
-- Pagination "Load More" pour exploration fluide (100 Pokémon à la fois)
-- Pokédex fermée par défaut pour meilleure UX
+**Pokédex** est une application web moderne construite avec **Next.js 15** permettant d'explorer tous les Pokémon avec des informations détaillées, un mode aventure multi-agent, et des outils avancés d'analyse d'équipe.
 
-### 2. **Fiches Détaillées des Pokémon**
-Chaque Pokémon dispose d'une page complète avec :
-- **Images du Pokémon** : Sprites avant/arrière, variantes normales et chromatiques (shiny)
-- **Cri Pokémon** : Lecture du cri audio original
-- **Informations Générales** : ID, nom, type(s), taille, poids
-- **Statistiques** : HP, Attaque, Défense, Attaque Spéciale, Défense Spéciale, Vitesse
-- **Attaques** : Liste des mouvements avec niveaux d'apprentissage
-- **Chaîne d'Évolution** : Affichage visuel de l'évolution complète avec sélection directe (sans rechargement)
-- **Capacités** : Compétences spéciales y compris les capacités cachées
+---
 
-### 3. **Comparateur de Pokémon**
-- Mode "VS" pour comparer deux Pokémon côte à côte
-- Comparaison des statistiques avec indicateurs visuels (gagnant/égal/perdant)
-- Analyse des types avec matrice d'efficacité
-- Sélection de Pokémon via modal de recherche multilingue
-- Affichage des sprites pixelisés
+## ✨ Fonctionnalités
+
+### 1. **Pokédex Interactive**
+- Liste complète de 1025+ Pokémon (toutes générations)
+- Chargement rapide des 151 premiers (Kanto)
+- Recherche multilingue (FR/EN) par nom ou ID
+- Fiches détaillées avec stats, attaques, évolutions
+- Sprites normaux et shiny avec cris audio
+
+### 2. **Mode Aventure Multi-Agent 🤖**
+- Système d'aventure narrative avec 4 agents IA autonomes
+- Génération dynamique de quêtes et événements
+- Choix tactiques personnalisés à votre équipe
+- Système de combat avec règles déterministes
+- **Agents autonomes** :
+  - **GameMaster** : Génère quêtes et événements
+  - **ChoiceAgent** : Crée les options tactiques
+  - **GuardianAgent** : Valide cohérence et sécurité
+  - **NarratorAgent** : Narre les issues
+- **Logs en temps réel** : Visualisez les interactions entre agents
+- Communication inter-agents avec votes et consensus
+- _(Voir MULTI_AGENT_SYSTEM.md pour détails)_
+
+### 3. **Comparateur VS**
+- Comparaison côte à côte de deux Pokémon
+- Analyse des statistiques avec indicateurs visuels
+- Matrice d'efficacité des types
 
 ### 4. **Team Builder**
-- Créez une équipe de jusqu'à 6 Pokémon
-- Analyse automatique de la couverture de type :
-  - **Faiblesses défensives** : Types contre lesquels l'équipe est vulnérable
-  - **Résistances** : Types que l'équipe peut contrer efficacement
-  - **Couverture offensive** : Types offensifs couverts par l'équipe
-- Suggestions intelligentes pour compléter votre équipe
-- Empêche les doublons
-- Interface optimisée avec sprites agrandis et types redimensionnés
+- Construction d'équipes jusqu'à 6 Pokémon
+- Analyse automatique :
+  - Faiblesses défensives
+  - Résistances
+  - Couverture offensive
+- Suggestions intelligentes
+- Prévention des doublons
 
-### 5. **Support Multilingue Complet**
-- Traductions EN/FR pour l'interface et les noms de Pokémon
-- Recherche fonctionnelle dans les deux langues
-- Noms et descriptions adaptés selon la langue choisie
-- Sélection de langue accessible dans l'en-tête
+### 5. **Professor Chen Multi-Agent 👨‍🔬**
+- Analyse d'équipe par système multi-agent
+- 3 agents spécialisés sans appels IA (outils déterministes)
+- Conseils stratégiques personnalisés
+- _(Voir PROFESSOR_CHEN_MULTIAGENT.md pour détails)_
 
-### 6. **Interface Utilisateur Moderne**
-- Design responsif et adaptatif (mobile, tablette, desktop)
+### 6. **Booster Lab** 
+- Simulation d'ouverture de boosters
+- Collection de cartes avec compteurs
+
+### 7. **Support Multilingue**
+- Interface EN/FR
+- Noms de Pokémon traduits
+- Recherche dans les deux langues
+
+### 8. **Interface Moderne**
+- Design responsif (mobile/tablette/desktop)
 - Thème clair/sombre avec persistence
-- Animations fluides et transitions élégantes
-- Composants UI professionnels via Radix UI
-- Affichage pixelisé rétro pour les sprites
-
-### 7. **Performance Optimisée**
-- Chargement initial rapide avec données pré-calculées
-- Chargement progressif des données supplémentaires
-- Optimisation des images
-- Mise en cache intelligente avec revalidation
-- useSWR pour gestion des données côté client
-
-### 8. **Navigation Avancée**
-- Barre de recherche avec support multilingue
-- Liens directs vers les pages détaillées
-- Paramètres d'URL pour partage facile
-- Navigation contextuelle
-- Sélection de Pokémon sans rechargement depuis la chaîne d'évolution
+- Components UI professionnels (Radix UI)
+- Animations fluides
 
 ---
 
 ## 🛠️ Stack Technologique
 
 ### Frontend
-- **Next.js 16** - Framework React moderne et performant
+- **Next.js 15** - Framework React avec App Router
 - **React 19** - Bibliothèque UI
-- **TypeScript** - Langage typé pour plus de sécurité
-- **Tailwind CSS** - Framework CSS utilitaire
-- **Radix UI** - Composants UI accessibles et non stylisés
+- **TypeScript** - Typage strict
+- **Tailwind CSS** - Framework CSS
+- **Radix UI** - Composants accessibles
 
-### Outils & Libraires
-- **React Hook Form** - Gestion de formulaires
-- **Date-fns** - Manipulation de dates
-- **Lucide React** - Icônes SVG
-- **Next-themes** - Gestion du thème clair/sombre
-- **Sonner** - Notifications de style toast
-- **Embla Carousel** - Carrousels responsives
+### IA & Agents
+- **Mistral AI API** - Modèle LLM pour agents autonomes
+- **Architecture Multi-Agent** - Système P-R-A (Perceive-Reason-Act)
+- **Orchestrateur** - Gestion des communications inter-agents
+- **Voting System** - Consensus et négociation
 
-### API
-- **PokéAPI** - Source de données complète sur les Pokémon
-  - Accessible à : https://pokeapi.co/api/v2/
+### API & Données
+- **PokéAPI** - Base de données Pokémon complète
+- **SWR** - Gestion des données côté client
 
-### Build & Déploiement
-- **pnpm** - Gestionnaire de paquets performant
-- **PostCSS + Autoprefixer** - Post-traitement CSS
-- **ESLint** - Linter pour la qualité du code
+### Build
+- **pnpm** - Gestionnaire de paquets
+- **ESLint** - Qualité du code
 
 ---
 
-## 📁 Structure du Projet
+## 📁 Structure
 
 ```
 Pokemon_Projet/
-├── app/                          # Pages Next.js App Router
-│   ├── layout.tsx               # Layout principal
-│   ├── page.tsx                 # Page d'accueil avec liste
-│   ├── loading.tsx              # Écran de chargement
-│   ├── globals.css              # Styles globaux
-│   └── pokemon/
-│       └── [id]/                # Page dynamique pour chaque Pokémon
-│           ├── page.tsx         # Page serveur
-│           └── client.tsx       # Composant client
-├── components/                   # Composants React réutilisables
-│   ├── pokemon-list.tsx         # Liste affichable des Pokémon
-│   ├── pokemon-details.tsx      # Affichage détaillé d'un Pokémon
-│   ├── evolution-chain.tsx      # Chaîne d'évolution avec sélection
-│   ├── moves-tab.tsx            # Onglet des attaques
-│   ├── ability-popup.tsx        # Modal des capacités
-│   ├── stat-bars.tsx            # Affichage des barres de stats
-│   ├── type-badge.tsx           # Badge de type
-│   ├── pokedex-shell.tsx        # Layout principal de la Pokédex
-│   ├── pokemon-comparison.tsx   # Comparateur de Pokémon
-│   ├── team-builder.tsx         # Créateur d'équipe avec analyse
-│   ├── theme-provider.tsx       # Fournisseur de thème
-│   ├── language-provider.tsx    # Fournisseur de langue (EN/FR)
-│   ├── network-status.tsx       # Indicateur d'état réseau
-│   ├── boot-animation.tsx       # Animation de démarrage
-│   └── ui/                      # Composants UI génériques
-│       ├── button.tsx, card.tsx, dialog.tsx
-│       ├── tabs.tsx, input.tsx, etc.
-│       └── ...
-├── hooks/                        # Hooks React personnalisés
-│   ├── use-pokemon.ts           # Hook pour récupérer les données Pokémon
-│   ├── use-mobile.ts            # Hook pour détection mobile
-│   └── use-toast.ts             # Hook pour notifications
-├── lib/                          # Utilitaires et logique métier
-│   ├── pokeapi.ts               # Intégration PokéAPI
-│   ├── ability-names.ts         # Traduction des capacités
-│   ├── move-names.ts            # Traduction des attaques
-│   └── utils.ts                 # Fonctions utilitaires
-├── public/                       # Fichiers statiques
-├── styles/                       # Fichiers CSS supplémentaires
-├── package.json                 # Dépendances du projet
-├── tsconfig.json                # Configuration TypeScript
-├── next.config.mjs              # Configuration Next.js
-├── tailwind.config.ts           # Configuration Tailwind CSS
-└── components.json              # Configuration des composants
+├── src/
+│   ├── app/                     # Pages Next.js
+│   │   ├── page.tsx            # Accueil avec liste
+│   │   ├── adventure/          # Mode aventure
+│   │   ├── pokemon/[id]/       # Détails Pokémon
+│   │   └── api/                # Routes API
+│   │       └── adventure/      # API multi-agent
+│   ├── components/
+│   │   ├── pokemon/            # Composants Pokédex
+│   │   ├── adventure/          # UI mode aventure
+│   │   ├── team-builder/       # Créateur d'équipe
+│   │   ├── comparison/         # Comparateur
+│   │   ├── booster/            # Lab boosters
+│   │   └── ui/                 # Composants génériques
+│   ├── lib/
+│   │   ├── ai/                 # Système multi-agent
+│   │   │   ├── base-agent.ts           # Classe abstraite
+│   │   │   ├── agent-orchestrator.ts   # Orchestrateur
+│   │   │   ├── autonomous-agents.ts    # 4 agents
+│   │   │   ├── multi-agent-system.ts   # API wrapper
+│   │   │   ├── agent-log-collector.ts  # Logs UI
+│   │   │   ├── agent-tools.ts          # Outils déterministes
+│   │   │   └── professor-Chen-agents.ts # Agents Chen
+│   │   ├── adventure/          # Règles de jeu
+│   │   └── api/                # Utilitaires API
+│   ├── types/                  # Types TypeScript
+│   └── hooks/                  # Hooks personnalisés
+├── public/                     # Assets statiques
+├── README.md                   # Ce fichier
+├── MULTI_AGENT_SYSTEM.md      # Doc système multi-agent
+└── PROFESSOR_CHEN_MULTIAGENT.md # Doc agents Chen
 ```
 
 ---
 
-## 🚀 Guide de Démarrage
+## 🚀 Installation
 
 ### Prérequis
-- **Node.js** 18.17+ ou **Bun**, **pnpm** 9+
-- Un gestionnaire de paquets (pnpm recommandé)
+- Node.js 18.17+
+- pnpm 9+
+- Clé API Mistral (pour mode aventure)
 
-### Installation
+### Étapes
 
-1. **Cloner/Accéder au projet**
+1. **Cloner le projet**
    ```bash
    cd Pokemon_Projet
    ```
@@ -177,177 +155,173 @@ Pokemon_Projet/
    pnpm install
    ```
 
-3. **Lancer le serveur de développement**
+3. **Configuration**
+   
+   Créer `.env.local` :
+   ```env
+   MISTRAL_API_KEY=votre_cle_api_ici
+   ```
+   
+   _Obtenez une clé gratuite sur https://console.mistral.ai/_
+
+4. **Lancer le dev server**
    ```bash
    pnpm dev
    ```
 
-4. **Accéder à l'application**
-   - Ouvrir http://localhost:3000 dans le navigateur
+5. **Accéder à l'app**
+   ```
+   http://localhost:3000
+   ```
 
-### Scripts Disponibles
+### Scripts
 
 ```bash
-# Développement avec hot-reload
-pnpm dev
-
-# Build pour production
-pnpm build
-
-# Lancer le serveur production
-pnpm start
-
-# Vérifier la qualité du code
-pnpm lint
+pnpm dev      # Développement
+pnpm build    # Build production
+pnpm start    # Serveur production
+pnpm lint     # Vérification code
 ```
 
 ---
 
-## 💡 Fonctionnement Principal
+## 💡 Utilisation
 
-### Flux de Chargement des Données
+### Pokédex Classique
+1. Parcourez la liste sur la page d'accueil
+2. Utilisez la recherche (nom FR/EN ou ID)
+3. Cliquez sur un Pokémon pour voir ses détails
+4. Explorez évolutions, stats, attaques
 
-1. **Chargement Rapide Initial (< 1s)**
-   - 151 premiers Pokémon chargés depuis données pré-calculées
-   - Affichage immédiat de l'interface
+### Mode Aventure Multi-Agent
+1. Accédez via le bouton **ADVENTURE** dans l'en-tête
+2. Sélectionnez 3-6 Pokémon pour votre équipe
+3. Choisissez style narratif et langue
+4. Lancez l'aventure
+5. Prenez des décisions tactiques
+6. Consultez les **logs** pour voir les agents interagir
+   - Onglet **Agents** : Actions des agents
+   - Onglet **Tools** : Appels d'outils
+   - Onglet **Interactions** : Communications inter-agents (🔄💬🗳️🚨)
 
-2. **Chargement Progressif en Arrière-Plan**
-   - Générations suivantes chargées graduellement
-   - Pas de blocage de l'interface utilisateur
-   - Indicateur de progression visible
+### Team Builder
+1. Cliquez sur **TEAM** dans l'en-tête
+2. Ajoutez jusqu'à 6 Pokémon
+3. Consultez l'analyse de couverture
+4. Suivez les suggestions
 
-3. **Mise en Cache**
-   - Données mises en cache côté client
-   - Requêtes optimisées vers PokéAPI
-   - Réduction de la bande passante
-
-### Affichage des Détails d'un Pokémon
-
-- URL paramétrisée : `/pokemon/[id]`
-- Page optimisée avec génération de métadonnées SSG
-- Récupération complète des données :
-  - Informations de base
-  - Espèce et description
-  - Chaîne d'évolution complète
-  - Toutes les attaques disponibles
-
-### Comparateur de Pokémon (Mode VS)
-
-- Accessible via le bouton "VS" dans l'en-tête
-- Affichage côte à côte de deux Pokémon
-- Comparaison détaillée des statistiques avec indicateurs
-- Analyse complète des types (efficacités)
-- Modal de sélection avec recherche multilingue
-- Sprite pixelisé pour chaque Pokémon
-
-### Team Builder (Mode TEAM)
-
-- Accessible via le bouton "TEAM" dans l'en-tête
-- Construction d'équipe jusqu'à 6 Pokémon
-- Prévention automatique des doublons
-- **Analyse de Couverture** :
-  - Tableau des faiblesses défensives
-  - Tableau des résistances
-  - Matrice de couverture offensive
-- **Suggestions Intelligentes** pour compléter l'équipe
-- Modal de sélection avec recherche par nom (EN/FR) ou ID
-- Interface optimisée : sprites agrandis (80px), types redimensionnés
-
-### Recherche Multilingue
-
-- Recherche par nom français (ex: "Rondoudou" pour Jigglypuff)
-- Recherche par nom anglais (ex: "Pikachu")
-- Recherche par ID Pokémon (ex: "25" pour Pikachu)
-- Fonctionne dans :
-  - Liste principale des Pokémon
-  - Comparateur
-  - Team Builder
-- Mise en cache des noms traduits pour performance
+### Comparateur VS
+1. Cliquez sur **VS** dans l'en-tête
+2. Sélectionnez 2 Pokémon
+3. Comparez stats et types
 
 ---
 
-## 🎨 Points Forts du Design
+## 🤖 Architecture Multi-Agent
 
-### Interface Utilisateur
-- **Responsive** : Fonctionne parfaitement sur tous les appareils
-- **Accessible** : Normes WCAG respectées
-- **Moderne** : Design minimaliste et épuré
-- **Thématisé** : Support clair/sombre avec sauvegarde des préférences
+Le mode aventure utilise un **véritable système multi-agent** avec :
+
+- **Agents autonomes** avec boucle Perceive-Reason-Act
+- **Communication asynchrone** via messages
+- **Vote et consensus** pondéré (>70% pour décision)
+- **Négociation** sur plusieurs rounds
+- **Mémoire individuelle** par agent
+- **Orchestrateur** pour coordination
+
+**Détails complets** : Voir [MULTI_AGENT_SYSTEM.md](MULTI_AGENT_SYSTEM.md)
+
+---
+
+## 👨‍🔬 Professor Chen Multi-Agent
+
+Système d'analyse d'équipe avec 3 agents spécialisés :
+- **Composition Analyzer** : Analyse diversité des types
+- **Strategy Evaluator** : Évalue stratégie offensive/défensive
+- **Weakness Identifier** : Identifie vulnérabilités
+
+Utilise **outils déterministes** (aucun appel IA), calculs en TypeScript pur.
+
+**Détails complets** : Voir [PROFESSOR_CHEN_MULTIAGENT.md](PROFESSOR_CHEN_MULTIAGENT.md)
+
+---
+
+## 📊 Données
+
+- **1025+ Pokémon** (toutes générations)
+- **Stats complètes** (HP, Att, Def, SpA, SpD, Spe)
+- **800+ Attaques** avec traductions
+- **200+ Capacités** avec traductions
+- **Chaînes d'évolution** complètes
+- **Types et efficacités** (18 types)
+
+Source : **PokéAPI** (https://pokeapi.co/)
+
+---
+
+## 🎯 Points Forts
 
 ### Performance
-- **Optimisation Image** : Utilisation de Next.js Image
-- **Code Splitting** : Chargement sous demande des modules
-- **Chargement Progressif** : Pas d'attente inutile
-- **SEO** : Métadonnées dynamiques pour chaque Pokémon
+- Chargement initial < 1s (151 Pokémon)
+- Chargement progressif arrière-plan
+- Cache intelligent avec SWR
+- Optimisation images Next.js
+
+### UX/UI
+- Responsive tous devices
+- Thème clair/sombre
+- Animations fluides
+- Composants accessibles (WCAG)
+
+### Architecture
+- TypeScript strict
+- Composants modulaires
+- Séparation client/serveur
+- API routes optimisées
+
+### Innovation IA
+- **Multi-agent autonome** véritable
+- **Logs en temps réel** des interactions
+- **Consensus et négociation**
+- Analyse déterministe (Professor Chen)
 
 ---
 
-## 📊 Contenu Disponible
+## 📚 Documentation
 
-- **Total de Pokémon** : 1025+ (toutes générations)
-- **Génération Kanto** : 151 Pokémon chargés en priorité
-- **Données Complètes** :
-  - Statistiques de base
-  - Attaques et niveaux d'apprentissage
-  - Chaînes d'évolution
-  - Capacités et capacités cachées
-  - Descriptions en plusieurs langues
-  - Images officielles (sprites et artwork)
+- **README.md** : Ce fichier (vue d'ensemble)
+- **MULTI_AGENT_SYSTEM.md** : Système multi-agent mode aventure
+- **PROFESSOR_CHEN_MULTIAGENT.md** : Agents Professor Chen
 
 ---
 
-## 🔗 Ressources Externes
+## 🔗 Ressources
 
 - **PokéAPI** : https://pokeapi.co/
-  - API gratuite et open-source
-  - Documentation complète disponible
-  - Accessible sans authentification
+- **Mistral AI** : https://mistral.ai/
+- **Next.js Docs** : https://nextjs.org/docs
+- **Radix UI** : https://www.radix-ui.com/
 
 ---
 
-## 👨‍💻 Architecture et Bonnes Pratiques
+## 📝 Notes
 
-### Composants
-- Utilisation de composants fonctionnels avec hooks
-- Séparation entre composants serveur et client
-- Réutilisabilité maximale
-
-### Typage
-- TypeScript strict
-- Types explicites pour les interfaces
-- Prévention des erreurs runtime
-
-### Organisation du Code
-- Logique métier isolée dans `/lib`
-- Hooks personnalisés pour la réutilisabilité
-- Composants modulaires et testables
+- Projet réalisé via **prompts AI** (GitHub Copilot)
+- Architecture **production-ready**
+- Code **bien typé et commenté**
+- **Backward compatible** (anciens systèmes conservés)
 
 ---
 
-### Termes Clés Expliqués
-- **Next.js** : Framework qui facilite la création de sites web avec React
-- **TypeScript** : Version "sécurisée" du JavaScript avec vérification des erreurs
-- **Tailwind CSS** : Outil pour faire des designs modernes rapidement
-- **PokéAPI** : Base de données gratuite contenant toutes les infos Pokémon
-- **Responsive** : Le site s'adapte automatiquement à la taille de l'écran
+## 🎓 Apprentissages Clés
+
+Ce projet démontre :
+- Développement piloté par IA
+- Architecture multi-agent avancée
+- Intégration LLM dans applications web
+- Systèmes de consensus et négociation
+- Outils déterministes vs. génératifs
+- Performance et UX modernes
 
 ---
 
-## 📝 Notes de Développement
-
-- Le projet utilise **App Router** de Next.js (architecture moderne)
-- Tous les composants sont optimisés pour performance
-- Les données sont auto-mises en cache intelligemment
-- L'application est production-ready
-
----
-
-## 📧 Support et Questions
-
-Pour toute question sur le fonctionnement du projet, consultez :
-- La documentation Next.js : https://nextjs.org/docs
-- La documentation PokéAPI : https://pokeapi.co/docs/v2
-- Les fichiers source bien commentés
-
----
-
+**Bon jeu et bonne exploration ! 🎮✨**

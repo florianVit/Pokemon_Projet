@@ -1,7 +1,7 @@
 // Generate event for current step
 
 import { NextRequest, NextResponse } from "next/server";
-import { gameMasterGenerateQuestEvent, choiceAgentGenerateChoices } from "@/lib/ai/adventure-agents";
+import { gameMasterGenerateQuestEvent, choiceAgentGenerateChoices, logCollector } from "@/lib/ai";
 import { retrieveRelevantMemories, storeAdventureMemory } from "@/lib/ai/agent-tools";
 import { GameState } from "@/types/adventure";
 
@@ -46,8 +46,6 @@ export async function POST(request: NextRequest) {
     // Increment step for new event
     const currentStep = gameState.currentStep + 1;
 
-    console.log(`Generating quest event: step ${currentStep}/${gameState.quest.estimatedSteps} for quest "${gameState.quest.title}"`);
-
     const memoryEntries = retrieveRelevantMemories({
       sessionId: gameState.sessionId,
       tags: [gameState.quest.title],
@@ -66,8 +64,6 @@ export async function POST(request: NextRequest) {
       memoryContext,
     });
 
-    console.log(`Event generated: ${event.type} (${event.difficulty})`);
-
     // Generate team-aware choices from Narrator
     const narratorResponse = await choiceAgentGenerateChoices({
       event,
@@ -79,8 +75,6 @@ export async function POST(request: NextRequest) {
       memoryContext,
     });
 
-    console.log(`Choices generated: ${narratorResponse.choices.length} options`);
-
     const location = event.context?.location ? ` at ${event.context.location}` : "";
     const relevance = event.context?.questRelevance ? ` | ${event.context.questRelevance}` : "";
     storeAdventureMemory({
@@ -90,6 +84,31 @@ export async function POST(request: NextRequest) {
       summary: `${event.type}${location}: ${event.scene.slice(0, 120)}${relevance}`,
       timestamp: new Date().toISOString(),
     });
+
+    const toolLogs = [
+      {
+        agent: "Memory",
+        tool: "retrieveRelevantMemories",
+        message: `Loaded ${memoryEntries.length} memories for context`,
+        data: `tags: ${[gameState.quest.title].join(", ")} | limit: 5`,
+        timestamp: new Date().toISOString(),
+      },
+      {
+        agent: "Memory",
+        tool: "storeAdventureMemory",
+        message: "Stored event summary",
+        data: `${event.type}${location}: ${event.scene.slice(0, 120)}${relevance}`,
+        timestamp: new Date().toISOString(),
+      },
+    ];
+
+    for (const log of toolLogs) {
+      console.log(`[Tool] ${log.agent}.${log.tool}: ${log.message}`);
+    }
+
+    // Get agent interaction logs
+    const interactionLogs = logCollector.getRecentLogs(20);
+    console.log(`\n📊 [API] Collected ${interactionLogs.length} interaction logs for frontend\n`);
 
     return NextResponse.json({
       event,
@@ -117,6 +136,8 @@ export async function POST(request: NextRequest) {
           timestamp: new Date().toISOString(),
         },
       ],
+      toolLogs,
+      interactionLogs,
     });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);

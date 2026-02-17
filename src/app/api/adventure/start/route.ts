@@ -7,7 +7,7 @@ import { gameMasterGenerateQuest } from "@/lib/ai/adventure-agents";
 
 export async function POST(request: NextRequest) {
   try {
-    const { team, narrativeStyle, language } = await request.json();
+    const { team, narrativeStyle, language, difficulty, estimatedSteps } = await request.json();
 
     if (!team || !Array.isArray(team) || team.length === 0 || !narrativeStyle) {
       console.error("Invalid start request:", { team, narrativeStyle, language });
@@ -18,7 +18,8 @@ export async function POST(request: NextRequest) {
     }
 
     const normalizedLanguage = (language || "en") as "en" | "fr";
-    console.log(`Starting adventure with team of ${team.length} Pokémon`, { narrativeStyle, language: normalizedLanguage });
+    const missionDifficulty = (difficulty || "normal") as "easy" | "normal" | "hard";
+    const questSteps = Math.max(4, Math.min(16, estimatedSteps || 8));
 
     // Fetch full pokemon data and convert to adventure format
     const adventureTeam: TeamPokemon[] = [];
@@ -58,15 +59,14 @@ export async function POST(request: NextRequest) {
     const seed = Math.floor(Math.random() * 1000000);
 
     // Generate quest using Game Master agent
-    console.log("Generating quest for adventure...");
     const quest = await gameMasterGenerateQuest({
       team: adventureTeam,
       narrativeStyle: narrativeStyle as NarrativeStyle,
       language: normalizedLanguage,
       seed,
+      difficulty: missionDifficulty,
+      estimatedSteps: questSteps,
     });
-
-    console.log(`Quest generated: "${quest.title}" (${quest.difficulty}, ${quest.estimatedSteps} steps)`);
 
     const gameState: GameState = {
       sessionId,
@@ -76,7 +76,11 @@ export async function POST(request: NextRequest) {
       completedSteps: [],
       seed,
       score: 0,
-      quest,
+      quest: {
+        ...quest,
+        estimatedSteps: questSteps,
+        difficulty: missionDifficulty,
+      },
       team: adventureTeam,
       defeatedCount: 0,
       capturedCount: 0,
@@ -87,13 +91,6 @@ export async function POST(request: NextRequest) {
       createdAt: new Date(),
       lastActionAt: new Date(),
     };
-
-    console.log(`Adventure session created: ${sessionId}`, { 
-      teamSize: adventureTeam.length, 
-      step: gameState.currentStep, 
-      teamNames: adventureTeam.map(p => p.name),
-      quest: quest.title
-    });
 
     // Ensure proper JSON serialization
     const serialized = JSON.parse(JSON.stringify(gameState));

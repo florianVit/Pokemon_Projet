@@ -24,26 +24,26 @@ export function computeBattle(
 ): { success: boolean; damageDealt: number; scoreDelta: number } {
   const rng = seededRandom(seed);
 
-  // Base hit chance (80%)
-  let hitChance = 0.8;
+  // Base hit chance (harder overall)
+  let hitChance = 0.75;
   const levelDiff = playerPower - enemyPower;
   hitChance += levelDiff * 0.05; // ±5% per level difference
 
   // Risk modifier
   const riskMultiplier = {
-    SAFE: { hit: 0.95, damage: 0.7, xp: 0.8 },
-    MODERATE: { hit: 0.8, damage: 1.0, xp: 1.0 },
-    RISKY: { hit: 0.6, damage: 1.4, xp: 1.5 },
+    SAFE: { hit: 0.9, damage: 0.75, xp: 0.8 },
+    MODERATE: { hit: 0.75, damage: 1.05, xp: 1.0 },
+    RISKY: { hit: 0.55, damage: 1.5, xp: 1.5 },
   }[riskLevel];
 
   hitChance *= riskMultiplier.hit;
   hitChance = Math.max(0.1, Math.min(1, hitChance)); // Clamp 10-100%
 
   // Difficulty scaling
-  const difficultyDamage = { easy: 0.8, normal: 1.0, hard: 1.3 }[difficulty];
+  const difficultyDamage = { easy: 0.9, normal: 1.15, hard: 1.45 }[difficulty];
 
   // Damage calculation
-  const baseDamage = 18 + playerPower * 1.6;
+  const baseDamage = 20 + playerPower * 1.8;
   const variance = 0.8 + rng() * 0.4; // 80-120% variance
   const actualDamage = Math.floor(
     baseDamage * riskMultiplier.damage * difficultyDamage * variance
@@ -72,14 +72,14 @@ export function computeCapture(
 ): { success: boolean; description: string; scoreDelta: number } {
   const rng = seededRandom(seed);
 
-  let baseChance = 0.5;
+  let baseChance = 0.45;
   baseChance -= pokemonLevel * 0.02;
   baseChance += playerLevel * 0.01;
 
   const riskModifier = {
-    SAFE: 0.3,
-    MODERATE: 0.5,
-    RISKY: 0.8,
+    SAFE: 0.25,
+    MODERATE: 0.45,
+    RISKY: 0.7,
   }[riskLevel];
 
   const finalChance = Math.min(1, Math.max(0.05, baseChance * riskModifier));
@@ -141,8 +141,8 @@ export function calculateEnemyLevel(
   seed: number
 ): number {
   const rng = seededRandom(seed);
-  const difficultyModifier = { easy: 0, normal: 1.5, hard: 3 }[difficulty];
-  const stepScaling = (step - 1) * 0.5; // Increases with steps
+  const difficultyModifier = { easy: 0.5, normal: 2.5, hard: 4 }[difficulty];
+  const stepScaling = (step - 1) * 0.7; // Increases with steps
   const variance = Math.floor((rng() - 0.5) * 3); // ±1
 
   return Math.max(
