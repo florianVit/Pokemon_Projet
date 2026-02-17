@@ -3,7 +3,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GameState, NarrativeStyle, TeamPokemon } from "@/types/adventure";
 import { getLocalizedName, getPokemon, getPokemonSpecies } from "@/lib/api/pokeapi";
-import { gameMasterGenerateQuest } from "@/lib/ai/adventure-agents";
+import { gameMasterGenerateQuest } from "@/lib/ai";
 
 export async function POST(request: NextRequest) {
   try {

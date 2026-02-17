@@ -592,9 +592,7 @@ export class GuardianAgent extends BaseAgent {
     super({
       name: "Guardian",
       role: "Tactical validator and risk analyst",
-      modelName: "mistral-small-latest", // Could use a different analytical model
-      temperature: 0.3, // Lower temperature for analytical tasks
-      maxTokens: 500,
+      // ✅ 100% DETERMINISTIC - No LLM needed, uses only tools
       expertise: ["validation", "risk_analysis", "type_effectiveness", "battle_simulation"],
       canInitiate: false,
       votingWeight: 1.3, // High weight for safety decisions
@@ -626,9 +624,9 @@ export class GuardianAgent extends BaseAgent {
     const teamStatus = getTeamStatus(perception.gameState.team);
     if (teamStatus.healthStatus === "critical") {
       console.log("\n🚨 [ALERT] Guardian detected CRITICAL situation!");
-      console.log("   ❤️  Team health: CRITICAL");
-      console.log("   👥 Alive:", teamStatus.alive, "/", perception.gameState.team.length);
-      console.log("   📢 Broadcasting warning to all agents...");
+      console.log("     Team health: CRITICAL");
+      console.log("    Alive:", teamStatus.alive, "/", perception.gameState.team.length);
+      console.log("    Broadcasting warning to all agents...");
       
       // Log critical alert for UI
       logCollector.logAlert(
@@ -744,10 +742,10 @@ export class GuardianAgent extends BaseAgent {
     const validCount = validations.filter((v: any) => v.isValid).length;
     const warningCount = validations.reduce((sum: number, v: any) => sum + v.warnings.length, 0);
     
-    console.log("\n🔄 [INTER-AGENT] Guardian → ChoiceAgent");
-    console.log("   ✅ Validation complete:", `${validCount}/${validations.length} valid`);
-    console.log("   ⚠️  Total warnings:", warningCount);
-    if (warningCount > 0) {
+    console.log("\n [INTER-AGENT] Guardian → ChoiceAgent");
+    console.log("   Validation complete:", `${validCount}/${validations.length} valid`);
+    console.log("    Total warnings:", warningCount);
+    if (warningCount > 1) {
       console.log("   📝 Sample warnings:", validations[0]?.warnings.slice(0, 2).join(", "));
     }
 
