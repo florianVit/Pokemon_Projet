@@ -229,7 +229,7 @@ pnpm lint     # Vérification code
 
 ### 🎮 Mode Aventure - Deux Architectures IA
 
-Accédez via le bouton **ADVENTURE** dans l'en-tête.
+Accédez via le bouton **ADVENTURE** dans l'en-tête de l'onglet TEAM/EQUIPE une fois une équipe créer.
 
 #### **Mode Classique (Autonomous)** ⚡
 - Architecture simple et stable
