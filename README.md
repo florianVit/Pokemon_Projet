@@ -1,3 +1,4 @@
+# Projet réalisé par Florian VITOUX & Mathéo STEPHAN
 # 🎮 Pokédex - Plateforme Interactive de Découverte & Aventure Pokémon
 
 ## 🎯 Résumé du Projet
